@@ -1,15 +1,6 @@
 import { combineReducers } from "redux";
-import type { TaskModel } from "../types/task";
-import { createSlice } from "@reduxjs/toolkit";
-
-const initialTasksState: TaskModel[] = [];
-
-const tasksSlice = createSlice({
-  initialState: initialTasksState,
-  name: "tasks",
-  reducers: {},
-});
+import tasksReducer from "./tasks/tasksSlice";
 
 export const rootReducer = combineReducers({
-  tasks: tasksSlice.reducer,
+  tasks: tasksReducer,
 });
