@@ -10,6 +10,8 @@ describe("<App />", () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText("Root Route")).toBeVisible();
+    expect(screen.getByText("Unstarted")).toBeVisible();
+    expect(screen.getByText("In Progress")).toBeVisible();
+    expect(screen.getByText("Completed")).toBeVisible();
   });
 });
