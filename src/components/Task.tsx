@@ -1,4 +1,4 @@
-type TaskProps = { title: string; description: string };
+type TaskProps = { title: string; description?: string };
 
 export function Task({ title, description }: TaskProps) {
   return (
@@ -9,7 +9,9 @@ export function Task({ title, description }: TaskProps) {
         </h1>
       </header>
       <hr />
-      <p className="mt-2 text-lg leading-8 text-gray-600">{description}</p>
+      {description && (
+        <p className="mt-2 text-lg leading-8 text-gray-600">{description}</p>
+      )}
     </article>
   );
 }
