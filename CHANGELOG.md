@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.4 (2023-09-26)
+
+### Features
+
+- create presentation components ([#2](https://github.com/samuelsilvadev/kanban-board/issues/2)) ([b5ad93e](https://github.com/samuelsilvadev/kanban-board/commit/b5ad93e737254a29ff8054d5ee174160d1840f36))
+- display selector with status on each task ([#3](https://github.com/samuelsilvadev/kanban-board/issues/3)) ([5f08af7](https://github.com/samuelsilvadev/kanban-board/commit/5f08af782de5f1d304ca14cc111a30971bf2e02d))
+
 ### [0.0.3](https://github.com/samuelsilvadev/create-react-app-n/compare/v0.0.2...v0.0.3) (2022-03-18)
 
 ### Features
