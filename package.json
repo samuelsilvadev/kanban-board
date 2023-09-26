@@ -28,9 +28,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:coverage": "yarn test --coverage --ci --reporters=default --watchAll=false",
     "eject": "react-scripts eject",
     "format": "prettier --write . --loglevel=error",
-    "lint": "eslint . --ext .tsx,.ts,.js",
+    "lint": "eslint . --ext .tsx,.ts,.js --max-warnings=0",
     "release": "DISABLE_CZ=true standard-version",
     "check-types": "tsc"
   },
@@ -72,5 +73,11 @@
       "path": "cz-conventional-changelog",
       "disableSubjectLowerCase": true
     }
+  },
+  "jest": {
+    "coverageReporters": [
+      "text",
+      "cobertura"
+    ]
   }
 }
