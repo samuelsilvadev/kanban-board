@@ -10,8 +10,8 @@ describe("<App />", () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText("Unstarted")).toBeVisible();
-    expect(screen.getByText("In Progress")).toBeVisible();
-    expect(screen.getByText("Completed")).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Unstarted" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "In Progress" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Completed" })).toBeVisible();
   });
 });

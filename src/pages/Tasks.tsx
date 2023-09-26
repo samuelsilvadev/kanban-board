@@ -1,11 +1,6 @@
 import { TaskList } from "../components/TaskList";
+import { STATUS_MAPPER, TASK_STATUSES } from "../consts/statuses";
 import { TaskModel } from "../types/task";
-
-const STATUS_MAPPER = new Map([
-  ["Unstarted", "OPEN"],
-  ["In Progress", "IN_PROGRESS"],
-  ["Completed", "DONE"],
-]);
 
 const tasks: TaskModel[] = [
   { id: "1", title: "Task 1", description: "Description 1", status: "OPEN" },
@@ -24,18 +19,20 @@ const tasks: TaskModel[] = [
   },
 ];
 
-const TASK_STATUSES = Array.from(STATUS_MAPPER.keys());
-
 export function Tasks() {
   const renderTaskList = (status: string) => {
-    const normalizedStatus = STATUS_MAPPER.get(status);
+    const statusIdentifier = STATUS_MAPPER.get(status);
     const tasksByStatus = tasks.filter(
-      (task) => task.status === normalizedStatus
+      (task) => task.status === statusIdentifier
     );
 
     return (
       <li className="flex-grow py-4 md:py-0 md:px-4" key={status}>
-        <TaskList title={status} tasks={tasksByStatus} />
+        <TaskList
+          title={status}
+          tasks={tasksByStatus}
+          status={statusIdentifier}
+        />
       </li>
     );
   };
