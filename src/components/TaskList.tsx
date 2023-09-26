@@ -1,9 +1,9 @@
 import type { TaskModel } from "../types/task";
 import { Task } from "./Task";
 
-type TaskListProps = { title: string; tasks: TaskModel[] };
+type TaskListProps = { title: string; tasks: TaskModel[]; status?: string };
 
-export function TaskList({ title, tasks }: TaskListProps) {
+export function TaskList({ title, tasks, status }: TaskListProps) {
   return (
     <article>
       <h1 className="text-3xl font-bold tracking-tight text-center mb-4">
@@ -12,7 +12,7 @@ export function TaskList({ title, tasks }: TaskListProps) {
       <ul>
         {tasks.map(({ title, description, id }) => (
           <li key={id} className="mb-4 last:mb-0">
-            <Task title={title} description={description} />
+            <Task title={title} description={description} status={status} />
           </li>
         ))}
       </ul>
