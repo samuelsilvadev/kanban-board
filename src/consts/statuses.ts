@@ -5,3 +5,5 @@ export const STATUS_MAPPER = new Map([
 ]);
 
 export const TASK_STATUSES = Array.from(STATUS_MAPPER.keys());
+
+export const TASK_STATUSES_IDENTIFIERS = Array.from(STATUS_MAPPER.values());

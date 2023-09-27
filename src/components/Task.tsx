@@ -1,10 +1,31 @@
+import { ChangeEvent } from "react";
 import { STATUS_MAPPER } from "../consts/statuses";
+import { Statuses } from "../types/task";
+import { isValidStatus } from "../validators/isValidStatus";
 
-type TaskProps = { title: string; description?: string; status?: string };
+type TaskProps = {
+  id: string;
+  title: string;
+  description?: string;
+  status?: string;
+  onUpdateStatus?: (id: string, status: Statuses) => void;
+};
 
-const noop = () => void 0;
+export function Task({
+  id,
+  title,
+  description,
+  status,
+  onUpdateStatus,
+}: TaskProps) {
+  const handleOnUpdateStatus = (event: ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
 
-export function Task({ title, description, status }: TaskProps) {
+    if (isValidStatus(value)) {
+      onUpdateStatus?.(id, value);
+    }
+  };
+
   return (
     <article className="p-4">
       <header className="flex justify-between">
@@ -14,7 +35,7 @@ export function Task({ title, description, status }: TaskProps) {
         >
           {title}
         </h1>
-        <select value={status} onChange={noop}>
+        <select value={status} onChange={handleOnUpdateStatus}>
           {Array.from(STATUS_MAPPER.entries()).map(([value, key]) => (
             <option key={key} value={key}>
               {value}
