@@ -16,7 +16,7 @@ const editTaskReducer: CaseReducer<
   TasksState,
   PayloadAction<{ id: string; fields: Partial<TaskModel> }>
 > = (state, { payload: { id, fields } }) => {
-  let taskIndex = state.findIndex((task) => task.id === id);
+  const taskIndex = state.findIndex((task) => task.id === id);
 
   if (taskIndex >= 0) {
     state[taskIndex] = { ...state[taskIndex], ...fields };
