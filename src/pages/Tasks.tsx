@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { TaskList } from "../components/TaskList";
 import { STATUS_MAPPER, TASK_STATUSES } from "../consts/statuses";
-import { Statuses, TaskModel } from "../types/task";
+import type { Statuses, TaskModel } from "../types/task";
 import { useTasks } from "../state/tasks/useTasks";
 
 const TASKS_MOCK: TaskModel[] = [

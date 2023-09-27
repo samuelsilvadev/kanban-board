@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { selectTasks } from "./selectors";
 import { useCallback } from "react";
-import { TaskModel } from "../../types/task";
+import type { TaskModel } from "../../types/task";
 import { editTask, setTasks } from "./tasksSlice";
 
 export function useTasks() {

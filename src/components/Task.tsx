@@ -1,6 +1,6 @@
 import { ChangeEvent } from "react";
 import { STATUS_MAPPER } from "../consts/statuses";
-import { Statuses } from "../types/task";
+import type { Statuses } from "../types/task";
 import { isValidStatus } from "../validators/isValidStatus";
 
 type TaskProps = {
