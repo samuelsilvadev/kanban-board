@@ -35,7 +35,10 @@ export function Task({
         >
           {title}
         </h1>
-        <select value={status} onChange={handleOnUpdateStatus}>
+        <label htmlFor="task-status" className="sr-only">
+          Update task status
+        </label>
+        <select id="task-status" value={status} onChange={handleOnUpdateStatus}>
           {Array.from(STATUS_MAPPER.entries()).map(([value, key]) => (
             <option key={key} value={key}>
               {value}
