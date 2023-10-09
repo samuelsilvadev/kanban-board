@@ -4,7 +4,7 @@ import { STATUS_MAPPER, TASK_STATUSES } from "../consts/statuses";
 import type { Statuses, TaskModel } from "../types/task";
 import { useTasks } from "../state/tasks/useTasks";
 
-const TASKS_MOCK: TaskModel[] = [
+export const TASKS_MOCK: TaskModel[] = [
   { id: "1", title: "Task 1", description: "Description 1", status: "OPEN" },
   { id: "2", title: "Task 2", description: "Description 2", status: "DONE" },
   {
