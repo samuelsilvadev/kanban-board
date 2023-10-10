@@ -2,12 +2,12 @@ import { render, screen } from "@testing-library/react";
 import App from "./App";
 import { MemoryRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import { store } from "./state/store";
+import { buildStore } from "./state/store";
 
 describe("<App />", () => {
   it("should render root page", () => {
     render(
-      <Provider store={store}>
+      <Provider store={buildStore()}>
         <MemoryRouter>
           <App />
         </MemoryRouter>
