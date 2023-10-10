@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import { TaskList } from "../components/TaskList";
 import { STATUS_MAPPER, TASK_STATUSES } from "../consts/statuses";
-import { TaskModel } from "../types/task";
+import type { Statuses, TaskModel } from "../types/task";
+import { useTasks } from "../state/tasks/useTasks";
 
-const tasks: TaskModel[] = [
+export const TASKS_MOCK: TaskModel[] = [
   { id: "1", title: "Task 1", description: "Description 1", status: "OPEN" },
   { id: "2", title: "Task 2", description: "Description 2", status: "DONE" },
   {
@@ -20,6 +22,16 @@ const tasks: TaskModel[] = [
 ];
 
 export function Tasks() {
+  const { tasks, setTasks, editTask } = useTasks();
+
+  useEffect(() => {
+    setTasks(TASKS_MOCK);
+  }, [setTasks]);
+
+  const handleOnUpdateStatus = (id: string, status: Statuses) => {
+    editTask(id, { status });
+  };
+
   const renderTaskList = (status: string) => {
     const statusIdentifier = STATUS_MAPPER.get(status);
     const tasksByStatus = tasks.filter(
@@ -27,11 +39,12 @@ export function Tasks() {
     );
 
     return (
-      <li className="flex-grow py-4 md:py-0 md:px-4" key={status}>
+      <li className="flex-grow md:w-1/3 py-4 md:py-0 md:px-4" key={status}>
         <TaskList
           title={status}
           tasks={tasksByStatus}
           status={statusIdentifier}
+          onUpdateStatus={handleOnUpdateStatus}
         />
       </li>
     );
