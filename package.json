@@ -31,6 +31,7 @@
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
     "husky": "4.3.8",
+    "json-server": "^0.17.4",
     "lint-staged": "^11.2.3",
     "postcss": "^8.4.30",
     "prettier": "^2.4.1",
@@ -48,7 +49,8 @@
     "format": "prettier --write . --loglevel=error",
     "lint": "eslint . --ext .tsx,.ts,.js --max-warnings=0",
     "release": "DISABLE_CZ=true standard-version",
-    "check-types": "tsc"
+    "check-types": "tsc",
+    "server": "json-server --watch database/db.json --port 3001"
   },
   "eslintConfig": {
     "extends": [
