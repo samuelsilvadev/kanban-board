@@ -45,7 +45,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "NODE_ENV=test react-scripts test",
     "test:coverage": "yarn test --coverage --ci --reporters=default --watchAll=false",
     "eject": "react-scripts eject",
     "format": "prettier --write . --loglevel=error",

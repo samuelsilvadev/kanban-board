@@ -60,4 +60,18 @@ describe("<Tasks />", () => {
 
     expect(screen.getAllByDisplayValue("Completed")).toHaveLength(2);
   });
+
+  it("should display error message", async () => {
+    server.use(http.get(ENDPOINTS.GET_TASKS, () => HttpResponse.error()));
+
+    render(
+      <Provider store={buildStore()}>
+        <Tasks />
+      </Provider>
+    );
+
+    await waitForLoadingToBeRemoved();
+
+    expect(screen.getByText(/Failed to fetch/)).toBeVisible();
+  });
 });

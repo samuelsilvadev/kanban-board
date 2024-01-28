@@ -1,4 +1,5 @@
 import { TaskModel } from "../types/task";
+import { logger } from "../utils/logger";
 import { ENDPOINTS } from "./root";
 
 async function getAll(): Promise<TaskModel[] | Error> {
@@ -13,13 +14,12 @@ async function getAll(): Promise<TaskModel[] | Error> {
 
     return tasks;
   } catch (error) {
-    console.log("🔥 Error caught on client", error);
+    const normalizedError =
+      error instanceof Error ? error : new Error("Unknown error");
 
-    if (error instanceof Error) {
-      return error;
-    }
+    logger.error(`🔥 Error caught on client: ${normalizedError}`);
 
-    return new Error("Unknown error");
+    return normalizedError;
   }
 }
 
