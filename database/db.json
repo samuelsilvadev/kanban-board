@@ -17,12 +17,6 @@
       "title": "Task 3",
       "description": "",
       "status": "IN_PROGRESS"
-    },
-    {
-      "id": "4",
-      "title": "Task 4",
-      "description": "Description 4",
-      "status": "IN_PROGRESS"
     }
   ]
 }

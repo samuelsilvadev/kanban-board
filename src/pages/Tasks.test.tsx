@@ -1,17 +1,34 @@
 import { render, screen } from "@testing-library/react";
-import { TASKS_MOCK, Tasks } from "./Tasks";
+import { Tasks } from "./Tasks";
 import { TASK_STATUSES } from "../consts/statuses";
 import { buildStore } from "../state/store";
 import { Provider } from "react-redux";
 import userEvent from "@testing-library/user-event";
+import { TaskModel } from "../types/task";
+import data from "../../database/db.json";
+import { toTaskModel } from "../mappers/toTaskModel";
+import { server } from "../tests/server";
+import { http, HttpResponse } from "msw";
+import { ENDPOINTS } from "../clients/root";
+import { waitForLoadingToBeRemoved } from "../tests/utils";
+
+const TASKS_MOCK: TaskModel[] = data.tasks.map(toTaskModel);
 
 describe("<Tasks />", () => {
-  it("should render tasks correctly", () => {
+  beforeEach(() => {
+    server.use(
+      http.get(ENDPOINTS.GET_TASKS, () => HttpResponse.json(data.tasks))
+    );
+  });
+
+  it("should render tasks correctly", async () => {
     render(
       <Provider store={buildStore()}>
         <Tasks />
       </Provider>
     );
+
+    await waitForLoadingToBeRemoved();
 
     TASK_STATUSES.forEach((status) => {
       expect(screen.getByRole("heading", { name: status })).toBeVisible();
@@ -19,16 +36,21 @@ describe("<Tasks />", () => {
 
     TASKS_MOCK.forEach(({ title, description }) => {
       expect(screen.getByText(title)).toBeVisible();
-      expect(screen.getByText(description)).toBeVisible();
+
+      if (description) {
+        expect(screen.getByText(description)).toBeVisible();
+      }
     });
   });
 
-  it("should update task status", () => {
+  it("should update task status", async () => {
     render(
       <Provider store={buildStore()}>
         <Tasks />
       </Provider>
     );
+
+    await waitForLoadingToBeRemoved();
 
     expect(screen.getAllByDisplayValue("Completed")).toHaveLength(1);
 

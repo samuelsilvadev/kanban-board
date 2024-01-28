@@ -1,9 +1,9 @@
 import { TaskModel } from "../types/task";
-import { makeApiUrl } from "./root";
+import { ENDPOINTS } from "./root";
 
 async function getAll(): Promise<TaskModel[] | Error> {
   try {
-    const response = await fetch(makeApiUrl("/tasks"));
+    const response = await fetch(ENDPOINTS.GET_TASKS);
 
     if (!response.ok) {
       throw new Error(response.statusText);

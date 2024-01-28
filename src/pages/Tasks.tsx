@@ -1,35 +1,24 @@
 import { useEffect } from "react";
 import { TaskList } from "../components/TaskList";
 import { STATUS_MAPPER, TASK_STATUSES } from "../consts/statuses";
-import type { Statuses, TaskModel } from "../types/task";
+import type { Statuses } from "../types/task";
 import { useTasks } from "../state/tasks/useTasks";
-
-export const TASKS_MOCK: TaskModel[] = [
-  { id: "1", title: "Task 1", description: "Description 1", status: "OPEN" },
-  { id: "2", title: "Task 2", description: "Description 2", status: "DONE" },
-  {
-    id: "3",
-    title: "Task 3",
-    description: "Description 3",
-    status: "IN_PROGRESS",
-  },
-  {
-    id: "4",
-    title: "Task 4",
-    description: "Description 4",
-    status: "IN_PROGRESS",
-  },
-];
+import { Loader } from "../components/Loader";
+import { ErrorDisplay } from "../components/ErrorDisplay";
 
 export function Tasks() {
-  const { tasks, setTasks, editTask } = useTasks();
+  const { isLoaded, isLoading, tasks, error, editTask, getTasks } = useTasks();
 
   useEffect(() => {
-    setTasks(TASKS_MOCK);
-  }, [setTasks]);
+    getTasks();
+  }, [getTasks]);
 
   const handleOnUpdateStatus = (id: string, status: Statuses) => {
     editTask(id, { status });
+  };
+
+  const handleOnReload = () => {
+    getTasks();
   };
 
   const renderTaskList = (status: string) => {
@@ -49,6 +38,14 @@ export function Tasks() {
       </li>
     );
   };
+
+  if (error) {
+    return <ErrorDisplay message={error.message} onReload={handleOnReload} />;
+  }
+
+  if (!isLoaded || isLoading) {
+    return <Loader />;
+  }
 
   return (
     <main className="p-5">

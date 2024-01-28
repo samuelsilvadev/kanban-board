@@ -1,19 +1,27 @@
-import { useDispatch, useSelector } from "react-redux";
-import { selectTasks } from "./selectors";
+import {
+  selectIsTasksLoaded,
+  selectIsTasksLoading,
+  selectTasks,
+  selectTasksError,
+} from "./selectors";
 import { useCallback } from "react";
 import type { TaskModel } from "../../types/task";
-import { editTask, setTasks } from "./tasksSlice";
+import { editTask, getTasks } from "./tasksSlice";
+import { useAppDispatch, useAppSelector } from "../store";
 
 export function useTasks() {
-  const tasks = useSelector(selectTasks);
-  const dispatch = useDispatch();
+  const tasks = useAppSelector(selectTasks);
+  const isLoading = useAppSelector(selectIsTasksLoading);
+  const isLoaded = useAppSelector(selectIsTasksLoaded);
+  const error = useAppSelector(selectTasksError);
+  const dispatch = useAppDispatch();
 
   return {
+    error,
+    isLoaded,
+    isLoading,
     tasks,
-    setTasks: useCallback(
-      (tasks: TaskModel[]) => dispatch(setTasks(tasks)),
-      [dispatch]
-    ),
+    getTasks: useCallback(() => dispatch(getTasks()), [dispatch]),
     editTask: useCallback(
       (id: string, fields: Partial<TaskModel>) =>
         dispatch(editTask({ id, fields })),
