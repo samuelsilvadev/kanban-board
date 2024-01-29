@@ -31,30 +31,40 @@
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
     "husky": "4.3.8",
+    "json-server": "^0.17.4",
     "lint-staged": "^11.2.3",
+    "msw": "^2.1.5",
     "postcss": "^8.4.30",
     "prettier": "^2.4.1",
     "react-scripts": "5.0.0",
     "standard-version": "^9.3.2",
     "tailwindcss": "^3.3.3",
-    "typescript": "^4.1.2"
+    "typescript": "^4.1.2",
+    "undici": "^5.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "NODE_ENV=test react-scripts test",
     "test:coverage": "yarn test --coverage --ci --reporters=default --watchAll=false",
     "eject": "react-scripts eject",
     "format": "prettier --write . --loglevel=error",
     "lint": "eslint . --ext .tsx,.ts,.js --max-warnings=0",
     "release": "DISABLE_CZ=true standard-version",
-    "check-types": "tsc"
+    "check-types": "tsc",
+    "server": "json-server --watch database/db.json --port 3001"
   },
   "eslintConfig": {
+    "globals": {
+      "globalThis": "writable"
+    },
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "jest/no-conditional-expect": "off"
+    }
   },
   "browserslist": {
     "production": [
@@ -93,6 +103,9 @@
     "coverageReporters": [
       "text",
       "cobertura"
+    ],
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(@bundled-es-modules)/).*/"
     ]
   }
 }
