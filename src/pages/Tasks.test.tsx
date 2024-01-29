@@ -10,7 +10,7 @@ import { toTaskModel } from "../mappers/toTaskModel";
 import { server } from "../tests/server";
 import { http, HttpResponse } from "msw";
 import { ENDPOINTS } from "../clients/root";
-import { waitForLoadingToBeRemoved } from "../tests/utils";
+import { getReloadButton, waitForLoadingToBeRemoved } from "../tests/utils";
 
 const TASKS_MOCK: TaskModel[] = data.tasks.map(toTaskModel);
 
@@ -73,5 +73,29 @@ describe("<Tasks />", () => {
     await waitForLoadingToBeRemoved();
 
     expect(screen.getByText(/Failed to fetch/)).toBeVisible();
+  });
+
+  it("should reload the page when an error happens", async () => {
+    server.use(http.get(ENDPOINTS.GET_TASKS, () => HttpResponse.error()));
+
+    render(
+      <Provider store={buildStore()}>
+        <Tasks />
+      </Provider>
+    );
+
+    await waitForLoadingToBeRemoved();
+
+    expect(screen.getByText(/Failed to fetch/)).toBeVisible();
+
+    server.use(
+      http.get(ENDPOINTS.GET_TASKS, () => HttpResponse.json(data.tasks))
+    );
+
+    const reloadButton = getReloadButton();
+
+    await userEvent.click(reloadButton);
+
+    expect(screen.queryByText(/Failed to fetch/)).not.toBeInTheDocument();
   });
 });
