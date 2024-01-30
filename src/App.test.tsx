@@ -5,9 +5,9 @@ import { MemoryRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { buildStore } from "./state/store";
 import { server } from "./tests/server";
-import { ENDPOINTS } from "./clients/root";
 import data from "../database/db.json";
 import { waitForLoadingToBeRemoved } from "./tests/utils";
+import { ENDPOINTS } from "./utils/api";
 
 describe("<App />", () => {
   beforeEach(() => {

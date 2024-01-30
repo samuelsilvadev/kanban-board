@@ -1,13 +1,17 @@
-import { tasksClient } from "../../clients/tasks";
 import type { ErrorMessage } from "../../types/error";
 import type { CreateTaskBody, TaskModel } from "../../types/task";
 import {
   CaseReducer,
-  Dispatch,
   PayloadAction,
   createSlice,
   AnyAction,
 } from "@reduxjs/toolkit";
+import {
+  ApiCallAction,
+  API_CALL_ACTION_TYPE,
+  getApiActions,
+} from "../middlewares/api";
+import { ENDPOINTS } from "../../utils/api";
 
 export type TasksState = {
   data: TaskModel[] | null;
@@ -45,37 +49,39 @@ const tasksSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(
-      getTasksSteps.success,
-      (state, { payload: { tasks } }: GetTasksActions["Success"]) => {
+      getTasksApiActions.success,
+      (state, { payload }: PayloadAction<TaskModel[]>) => {
         state.loading = false;
-        state.data = tasks;
+        state.data = payload;
       }
     );
     builder.addCase(
-      getTasksSteps.error,
-      (state, { payload: { error } }: GetTasksActions["Error"]) => {
+      getTasksApiActions.failure,
+      (state, { payload }: PayloadAction<ErrorMessage>) => {
         state.loading = false;
-        state.error = error;
+        state.error = payload;
       }
     );
     builder.addCase(
-      createTaskSteps.success,
-      (state, { payload: { task } }: CreateTaskActions["Success"]) => {
+      createTaskApiActions.success,
+      (state, { payload }: PayloadAction<TaskModel>) => {
         state.loading = false;
         state.error = undefined;
-        state.data?.push(task);
+        state.data?.push(payload);
       }
     );
     builder.addCase(
-      createTaskSteps.error,
-      (state, { payload: { error } }: CreateTaskActions["Error"]) => {
+      createTaskApiActions.failure,
+      (state, { payload }: PayloadAction<ErrorMessage>) => {
         state.loading = false;
-        state.error = error;
+        state.error = payload;
       }
     );
     builder.addMatcher(
       (action: AnyAction) =>
-        [getTasksSteps.start, createTaskSteps.start].includes(action.type),
+        [getTasksApiActions.start, createTaskApiActions.start].includes(
+          action.type
+        ),
       (state) => {
         state.loading = true;
         state.error = undefined;
@@ -86,96 +92,40 @@ const tasksSlice = createSlice({
 
 export const { editTask } = tasksSlice.actions;
 
-const getTasksSteps = {
-  start: `${tasksSlice.name}/getTasks/start`,
-  success: `${tasksSlice.name}/getTasks/success`,
-  error: `${tasksSlice.name}/getTasks/error`,
-} as const;
-
-interface GetTasksActions {
-  Start: ReturnType<typeof startGetTasks>;
-  Success: ReturnType<typeof successGetTasks>;
-  Error: ReturnType<typeof errorGetTasks>;
+enum Entities {
+  GET_TASKS = "GET_TASKS",
+  CREATE_TASK = "CREATE_TASK",
 }
 
-const startGetTasks = () => ({ type: getTasksSteps.start } as const);
+const createTaskApiActions = getApiActions(Entities.CREATE_TASK);
+const getTasksApiActions = getApiActions(Entities.GET_TASKS);
 
-const successGetTasks = (tasks: TaskModel[]) =>
-  ({
-    type: getTasksSteps.success,
-    payload: { tasks },
-  } as const);
-
-const errorGetTasks = (originalError: Error) => {
-  const error: ErrorMessage = {
-    message: originalError.message,
-  };
-
+export const getTasks = (): ApiCallAction => {
   return {
-    type: getTasksSteps.error,
-    payload: { error },
-  } as const;
-};
-
-export const getTasks = () => {
-  return async (dispatch: Dispatch) => {
-    dispatch(startGetTasks());
-
-    const response = await tasksClient.getAll();
-
-    dispatch(
-      response instanceof Error
-        ? errorGetTasks(response)
-        : successGetTasks(response)
-    );
+    type: API_CALL_ACTION_TYPE,
+    payload: {
+      url: ENDPOINTS.GET_TASKS,
+      entity: Entities.GET_TASKS,
+    },
   };
 };
 
-const createTaskSteps = {
-  start: `${tasksSlice.name}/createTask/start`,
-  success: `${tasksSlice.name}/createTask/success`,
-  error: `${tasksSlice.name}/createTask/error`,
-} as const;
-
-interface CreateTaskActions {
-  Start: ReturnType<typeof startCreateTask>;
-  Success: ReturnType<typeof successCreateTask>;
-  Error: ReturnType<typeof errorCreateTask>;
-}
-
-const startCreateTask = () => ({ type: createTaskSteps.start } as const);
-
-const successCreateTask = (task: TaskModel) =>
-  ({
-    type: createTaskSteps.success,
-    payload: { task },
-  } as const);
-
-const errorCreateTask = (originalError: Error) => {
-  const error: ErrorMessage = {
-    message: originalError.message,
-  };
-
+export const createTask = (
+  body: Omit<CreateTaskBody, "status">
+): ApiCallAction => {
   return {
-    type: createTaskSteps.error,
-    payload: { error },
-  } as const;
-};
-
-export const createTask = (body: Omit<CreateTaskBody, "status">) => {
-  return async (dispatch: Dispatch) => {
-    dispatch(startCreateTask());
-
-    const response = await tasksClient.create({
-      ...body,
-      status: "OPEN",
-    });
-
-    dispatch(
-      response instanceof Error
-        ? errorCreateTask(response)
-        : successCreateTask(response)
-    );
+    type: API_CALL_ACTION_TYPE,
+    payload: {
+      url: ENDPOINTS.CREATE_TASK,
+      entity: Entities.CREATE_TASK,
+      options: {
+        method: "POST",
+        body: JSON.stringify({ ...body, status: "OPEN" }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    },
   };
 };
 

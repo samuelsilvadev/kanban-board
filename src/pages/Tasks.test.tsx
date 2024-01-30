@@ -9,8 +9,8 @@ import data from "../../database/db.json";
 import { toTaskModel } from "../mappers/toTaskModel";
 import { server } from "../tests/server";
 import { http, HttpResponse } from "msw";
-import { ENDPOINTS } from "../clients/root";
 import { getReloadButton, waitForLoadingToBeRemoved } from "../tests/utils";
+import { ENDPOINTS } from "../utils/api";
 
 const TASKS_MOCK: TaskModel[] = data.tasks.map(toTaskModel);
 

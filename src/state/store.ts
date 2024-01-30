@@ -1,10 +1,13 @@
 import { AnyAction, ThunkDispatch, configureStore } from "@reduxjs/toolkit";
 import { rootReducer } from "./rootReducer";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import { apiMiddleware } from "./middlewares/api";
 
 export const buildStore = () => {
   return configureStore({
     reducer: rootReducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(apiMiddleware),
   });
 };
 
