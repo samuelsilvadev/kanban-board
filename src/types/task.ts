@@ -10,3 +10,8 @@ export type RawTaskModel = {
   description: string;
   status: string;
 };
+
+export type CreateTaskBody = Pick<
+  RawTaskModel,
+  "title" | "description" | "status"
+>;
