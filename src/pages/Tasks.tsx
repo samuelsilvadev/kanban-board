@@ -5,6 +5,7 @@ import type { Statuses } from "../types/task";
 import { useTasks } from "../state/tasks/useTasks";
 import { Loader } from "../components/Loader";
 import { ErrorDisplay } from "../components/ErrorDisplay";
+import { CreateTask } from "../components/CreateTask";
 
 export function Tasks() {
   const { isLoaded, isLoading, tasks, error, editTask, getTasks } = useTasks();
@@ -48,10 +49,15 @@ export function Tasks() {
   }
 
   return (
-    <main className="p-5">
-      <ul className="flex flex-col md:flex-row w-full">
-        {TASK_STATUSES.map(renderTaskList)}
-      </ul>
-    </main>
+    <>
+      <header className="p-5 pb-0 flex justify-end">
+        <CreateTask />
+      </header>
+      <main className="p-5">
+        <ul className="flex flex-col md:flex-row w-full">
+          {TASK_STATUSES.map(renderTaskList)}
+        </ul>
+      </main>
+    </>
   );
 }

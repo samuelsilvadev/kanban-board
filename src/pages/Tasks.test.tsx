@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { Tasks } from "./Tasks";
 import { TASK_STATUSES } from "../consts/statuses";
 import { buildStore } from "../state/store";
@@ -97,5 +97,74 @@ describe("<Tasks />", () => {
     await userEvent.click(reloadButton);
 
     expect(screen.queryByText(/Failed to fetch/)).not.toBeInTheDocument();
+  });
+
+  it("should display create task modal", async () => {
+    render(
+      <Provider store={buildStore()}>
+        <Tasks />
+      </Provider>
+    );
+
+    await waitForLoadingToBeRemoved();
+
+    const createTaskButton = screen.getByRole("button", {
+      name: /Create Task/,
+    });
+
+    await userEvent.click(createTaskButton);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("Task Name")).toBeVisible();
+    });
+    expect(screen.getByLabelText("Task Description")).toBeVisible();
+    expect(screen.getByRole("button", { name: /Save/ })).toBeVisible();
+  });
+
+  it("should create a task", async () => {
+    server.use(
+      http.post(ENDPOINTS.CREATE_TASK, async ({ request }) => {
+        const body = await request.json();
+
+        if (!body || typeof body !== "object") {
+          return HttpResponse.error();
+        }
+
+        return HttpResponse.json(
+          { ...body, id: new Date().getTime() },
+          { status: 201 }
+        );
+      })
+    );
+
+    render(
+      <Provider store={buildStore()}>
+        <Tasks />
+      </Provider>
+    );
+
+    await waitForLoadingToBeRemoved();
+
+    const createTaskButton = screen.getByRole("button", {
+      name: /Create Task/,
+    });
+
+    await userEvent.click(createTaskButton);
+
+    const taskTitle = screen.getByLabelText("Task Name");
+    const taskDescription = screen.getByLabelText("Task Description");
+    const saveButton = screen.getByRole("button", { name: /Save/ });
+
+    await userEvent.type(taskTitle, "New Task");
+    await userEvent.type(taskDescription, "New Task Description");
+    await userEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(screen.getByText("New Task")).toBeVisible();
+    });
+    expect(screen.getByText("New Task Description")).toBeVisible();
+    expect(
+      screen.queryByRole("button", { name: /Save/ })
+    ).not.toBeInTheDocument();
   });
 });
