@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.0.0 (2024-01-31)
+
+
+### Features
+
+* add UI to create a task ([94cf424](https://github.com/samuelsilvadev/kanban-board/commit/94cf424cbddca747bf7a2607335424d3a7097470))
+* create api middleware to centralize API logic and reduce boilerplate ([cd813a3](https://github.com/samuelsilvadev/kanban-board/commit/cd813a3f30cab37179b1d1890e469fbe3b94ebc8))
+* create network layer to create a task ([156a99b](https://github.com/samuelsilvadev/kanban-board/commit/156a99b2d37035c223fbb2196ed042df76a19715))
+* create presentation components ([#2](https://github.com/samuelsilvadev/kanban-board/issues/2)) ([b5ad93e](https://github.com/samuelsilvadev/kanban-board/commit/b5ad93e737254a29ff8054d5ee174160d1840f36))
+* display selector with status on each task ([#3](https://github.com/samuelsilvadev/kanban-board/issues/3)) ([5f08af7](https://github.com/samuelsilvadev/kanban-board/commit/5f08af782de5f1d304ca14cc111a30971bf2e02d))
+* load tasks from API ([#5](https://github.com/samuelsilvadev/kanban-board/issues/5)) ([4b505dc](https://github.com/samuelsilvadev/kanban-board/commit/4b505dcafc8b6d7407e1bf04a83a5fca6d00b833))
+* use redux to manage tasks ([#4](https://github.com/samuelsilvadev/kanban-board/issues/4)) ([22bfbf3](https://github.com/samuelsilvadev/kanban-board/commit/22bfbf3818c44b5bac498c93410413aa41c040ef))
+
 ### 0.0.4 (2023-09-26)
 
 ### Features
