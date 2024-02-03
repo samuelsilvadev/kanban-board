@@ -2,14 +2,26 @@ import { AnyAction, ThunkDispatch, configureStore } from "@reduxjs/toolkit";
 import { rootReducer } from "./rootReducer";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { apiMiddleware } from "./middlewares/api";
+import createSagaMiddleware from 'redux-saga'
+import { rootSaga } from "./rootSaga";
+
+
 
 export const buildStore = () => {
-  return configureStore({
+  const sagaMiddleware = createSagaMiddleware()
+
+  const store = configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(apiMiddleware),
+      getDefaultMiddleware().concat(apiMiddleware, sagaMiddleware),
   });
+
+  sagaMiddleware.run(rootSaga)
+
+  return store;
 };
+
+
 
 type Store = ReturnType<typeof buildStore>;
 
