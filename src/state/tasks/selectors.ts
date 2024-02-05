@@ -22,5 +22,5 @@ export function selectTasksError(state: RootState): ErrorMessage | undefined {
 }
 
 export function selectTaskById(state: RootState, taskId: string) {
-  return selectTasks(state).find((task) => task.id === taskId)
+  return selectTasks(state).find((task) => task.id === taskId);
 }

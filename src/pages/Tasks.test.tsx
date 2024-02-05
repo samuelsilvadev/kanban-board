@@ -44,6 +44,12 @@ describe("<Tasks />", () => {
   });
 
   it("should update task status", async () => {
+    server.use(
+      http.put(`${ENDPOINTS.EDIT_TASK}/:id`, async ({ request }) =>
+        HttpResponse.json(await request.json())
+      )
+    );
+
     render(
       <Provider store={buildStore()}>
         <Tasks />
@@ -57,6 +63,8 @@ describe("<Tasks />", () => {
     const openTaskSelector = screen.getAllByLabelText("Update task status")[0];
 
     userEvent.selectOptions(openTaskSelector, "DONE");
+
+    await waitForLoadingToBeRemoved();
 
     expect(screen.getAllByDisplayValue("Completed")).toHaveLength(2);
   });
