@@ -1,10 +1,10 @@
 import type { ErrorMessage } from "../../types/error";
 import type { CreateTaskBody, TaskModel } from "../../types/task";
 import {
-  CaseReducer,
   PayloadAction,
   createSlice,
   AnyAction,
+  createAction,
 } from "@reduxjs/toolkit";
 import {
   ApiCallAction,
@@ -19,47 +19,39 @@ export type TasksState = {
   error?: ErrorMessage;
 };
 
+export type EditTaskAction = PayloadAction<{ id: string; fields: Partial<TaskModel> }>;
+
 export const initialTasksState: TasksState = {
   data: null,
   loading: false,
 };
 
-const editTaskReducer: CaseReducer<
-  TasksState,
-  PayloadAction<{ id: string; fields: Partial<TaskModel> }>
-> = (state, { payload: { id, fields } }) => {
-  const tasks = state.data;
-
-  if (!tasks) {
-    return;
-  }
-
-  const taskIndex = tasks.findIndex((task) => task.id === id);
-
-  if (taskIndex >= 0) {
-    tasks[taskIndex] = { ...tasks[taskIndex], ...fields };
-  }
-};
-
 const tasksSlice = createSlice({
   initialState: initialTasksState,
   name: "tasks",
-  reducers: {
-    editTask: editTaskReducer,
-  },
+  reducers: {},
   extraReducers: (builder) => {
+    builder.addCase(
+      editTasksApiActions.success,
+      (state, { payload }: PayloadAction<TaskModel>) => {
+        state.loading = false;
+
+        if (!state.data) {
+          return;
+        }
+
+        const taskIndex = state.data.findIndex((task) => task.id === payload.id) ?? -1;
+
+        if (taskIndex >= 0) {
+          state.data[taskIndex] = payload;
+        }
+      }
+    );
     builder.addCase(
       getTasksApiActions.success,
       (state, { payload }: PayloadAction<TaskModel[]>) => {
         state.loading = false;
         state.data = payload;
-      }
-    );
-    builder.addCase(
-      getTasksApiActions.failure,
-      (state, { payload }: PayloadAction<ErrorMessage>) => {
-        state.loading = false;
-        state.error = payload;
       }
     );
     builder.addCase(
@@ -70,16 +62,9 @@ const tasksSlice = createSlice({
         state.data?.push(payload);
       }
     );
-    builder.addCase(
-      createTaskApiActions.failure,
-      (state, { payload }: PayloadAction<ErrorMessage>) => {
-        state.loading = false;
-        state.error = payload;
-      }
-    );
     builder.addMatcher(
       (action: AnyAction) =>
-        [getTasksApiActions.start, createTaskApiActions.start].includes(
+        [getTasksApiActions.start, createTaskApiActions.start, editTasksApiActions.start].includes(
           action.type
         ),
       (state) => {
@@ -87,18 +72,30 @@ const tasksSlice = createSlice({
         state.error = undefined;
       }
     );
+    builder.addMatcher(
+      (action: AnyAction) =>
+        [getTasksApiActions.failure, createTaskApiActions.failure, editTasksApiActions.failure].includes(
+          action.type
+        ),
+      (state, { payload }: PayloadAction<ErrorMessage>) => {
+        state.loading = false;
+        state.error = payload;
+      }
+    );
   },
 });
-
-export const { editTask } = tasksSlice.actions;
 
 enum Entities {
   GET_TASKS = "GET_TASKS",
   CREATE_TASK = "CREATE_TASK",
+  EDIT_TASK = "EDIT_TASK",
 }
 
-const createTaskApiActions = getApiActions(Entities.CREATE_TASK);
-const getTasksApiActions = getApiActions(Entities.GET_TASKS);
+export const createTaskApiActions = getApiActions(Entities.CREATE_TASK);
+export const getTasksApiActions = getApiActions(Entities.GET_TASKS);
+export const editTasksApiActions = getApiActions(Entities.EDIT_TASK);
+
+export const editTask = createAction<EditTaskAction['payload'], typeof editTasksApiActions.start>(editTasksApiActions.start)
 
 export const getTasks = (): ApiCallAction => {
   return {
