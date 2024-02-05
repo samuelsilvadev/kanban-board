@@ -1,4 +1,5 @@
 import { call, put, select, takeLatest } from "redux-saga/effects";
+import { ErrorMessage } from "../../types/error";
 import { TaskModel } from "../../types/task";
 import { ENDPOINTS } from "../../utils/api";
 import { logger } from "../../utils/logger";
@@ -23,7 +24,9 @@ export function* editTaskSaga(action: EditTaskAction) {
     );
 
     if (!task) {
-      throw new Error("Task not found");
+      throw new Error(
+        "Task was lost in the middle of the process. Reload the page."
+      );
     }
 
     const response: TaskModel = yield call(editTaskClient, {
@@ -36,16 +39,17 @@ export function* editTaskSaga(action: EditTaskAction) {
       payload: response,
     });
   } catch (error) {
-    if (error instanceof Error) {
-      logger.error(`Error editing a task - ${error.message}`);
+    const errorMessage: ErrorMessage = {
+      message:
+        error instanceof Error ? error.message : "Unknown error on edit task",
+    };
 
-      yield put({
-        type: editTasksApiActions.failure,
-        payload: error,
-      });
-    } else {
-      logger.error(`watchEditTask - ` + error);
-    }
+    logger.error(`Error editing a task - ${errorMessage.message}`);
+
+    yield put({
+      type: editTasksApiActions.failure,
+      payload: errorMessage,
+    });
   }
 }
 

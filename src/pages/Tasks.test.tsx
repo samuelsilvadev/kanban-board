@@ -69,6 +69,30 @@ describe("<Tasks />", () => {
     expect(screen.getAllByDisplayValue("Completed")).toHaveLength(2);
   });
 
+  it("should display error message when update task fail task status", async () => {
+    server.use(
+      http.put(`${ENDPOINTS.EDIT_TASK}/:id`, () => HttpResponse.error())
+    );
+
+    render(
+      <Provider store={buildStore()}>
+        <Tasks />
+      </Provider>
+    );
+
+    await waitForLoadingToBeRemoved();
+
+    expect(screen.getAllByDisplayValue("Completed")).toHaveLength(1);
+
+    const openTaskSelector = screen.getAllByLabelText("Update task status")[0];
+
+    userEvent.selectOptions(openTaskSelector, "DONE");
+
+    await waitForLoadingToBeRemoved();
+
+    expect(screen.getByText(/Failed to fetch/)).toBeVisible();
+  });
+
   it("should display error message", async () => {
     server.use(http.get(ENDPOINTS.GET_TASKS, () => HttpResponse.error()));
 
