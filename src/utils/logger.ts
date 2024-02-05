@@ -4,9 +4,9 @@ export function error(message: string) {
   }
 }
 
-export function info(message: string) {
+export function info<T>(target: T) {
   if (process.env.NODE_ENV !== "test") {
-    console.log(`👷‍♀️ - INFO - ${message}`);
+    console.log(`👷‍♀️ - INFO -`, target);
   }
 }
 
