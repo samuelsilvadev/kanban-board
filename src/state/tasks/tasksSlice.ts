@@ -1,10 +1,11 @@
 import type { ErrorMessage } from "../../types/error";
-import type { CreateTaskBody, TaskModel } from "../../types/task";
+import type { CreateTaskBody, TaskView, TaskModel } from "../../types/task";
 import {
   PayloadAction,
   createSlice,
   AnyAction,
   createAction,
+  CaseReducer,
 } from "@reduxjs/toolkit";
 import {
   ApiCallAction,
@@ -12,9 +13,10 @@ import {
   getApiActions,
 } from "../middlewares/api";
 import { ENDPOINTS } from "../../utils/api";
+import { toTaskView } from "../../mappers/toTaskModel";
 
 export type TasksState = {
-  data: TaskModel[] | null;
+  data: TaskView[] | null;
   loading: boolean;
   error?: ErrorMessage;
 };
@@ -24,15 +26,30 @@ export type EditTaskAction = PayloadAction<{
   fields: Partial<TaskModel>;
 }>;
 
+export type IncrementTimerAction = PayloadAction<{ id: string }>;
+
 export const initialTasksState: TasksState = {
   data: null,
   loading: false,
 };
 
+const incrementTimerReducer: CaseReducer<TasksState, IncrementTimerAction> = (
+  state,
+  { payload: { id } }
+) => {
+  const task = state.data?.find((task) => task.id === id);
+
+  if (task) {
+    task.timerSpend += 1;
+  }
+};
+
 const tasksSlice = createSlice({
   initialState: initialTasksState,
   name: "tasks",
-  reducers: {},
+  reducers: {
+    incrementTimer: incrementTimerReducer,
+  },
   extraReducers: (builder) => {
     builder.addCase(
       editTasksApiActions.success,
@@ -47,7 +64,10 @@ const tasksSlice = createSlice({
           state.data.findIndex((task) => task.id === payload.id) ?? -1;
 
         if (taskIndex >= 0) {
-          state.data[taskIndex] = payload;
+          state.data[taskIndex] = {
+            ...payload,
+            timerSpend: state.data[taskIndex].timerSpend || 0,
+          };
         }
       }
     );
@@ -55,7 +75,7 @@ const tasksSlice = createSlice({
       getTasksApiActions.success,
       (state, { payload }: PayloadAction<TaskModel[]>) => {
         state.loading = false;
-        state.data = payload;
+        state.data = payload.map(toTaskView);
       }
     );
     builder.addCase(
@@ -63,7 +83,7 @@ const tasksSlice = createSlice({
       (state, { payload }: PayloadAction<TaskModel>) => {
         state.loading = false;
         state.error = undefined;
-        state.data?.push(payload);
+        state.data?.push(toTaskView(payload));
       }
     );
     builder.addMatcher(
@@ -136,5 +156,14 @@ export const createTask = (
     },
   };
 };
+
+export const { incrementTimer } = tasksSlice.actions;
+
+export const startTimer = createAction<IncrementTimerAction["payload"]>(
+  `${tasksSlice.name}/startTimer`
+);
+export const stopTimer = createAction<IncrementTimerAction["payload"]>(
+  `${tasksSlice.name}/stopTimer`
+);
 
 export default tasksSlice.reducer;

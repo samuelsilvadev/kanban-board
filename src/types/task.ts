@@ -15,3 +15,5 @@ export type CreateTaskBody = Pick<
   RawTaskModel,
   "title" | "description" | "status"
 >;
+
+export type TaskView = TaskModel & { timerSpend: number };
