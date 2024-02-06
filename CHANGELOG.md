@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/samuelsilvadev/kanban-board/compare/v1.1.0...v1.2.0) (2024-02-06)
+
+
+### Features
+
+* add timer spend on task when it's moved to in progress ([#9](https://github.com/samuelsilvadev/kanban-board/issues/9)) ([085b1ca](https://github.com/samuelsilvadev/kanban-board/commit/085b1caf1f4f9ebc9195e08dc76c81cf10f3b00e))
+
 ## [1.1.0](https://github.com/samuelsilvadev/kanban-board/compare/v1.0.0...v1.1.0) (2024-02-05)
 
 
