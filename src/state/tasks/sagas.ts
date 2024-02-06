@@ -1,19 +1,28 @@
-import { call, put, select, takeLatest } from "redux-saga/effects";
+import { call, delay, put, select, takeLatest } from "redux-saga/effects";
+import { toTaskModel } from "../../mappers/toTaskModel";
 import { ErrorMessage } from "../../types/error";
 import { TaskModel } from "../../types/task";
 import { ENDPOINTS } from "../../utils/api";
 import { logger } from "../../utils/logger";
+import { takeLatestById } from "../rootSaga";
 import { selectTaskById } from "./selectors";
-import { EditTaskAction, editTasksApiActions } from "./tasksSlice";
+import {
+  EditTaskAction,
+  editTasksApiActions,
+  incrementTimer,
+  startTimer,
+  stopTimer,
+} from "./tasksSlice";
 
-function editTaskClient(body: TaskModel) {
-  return fetch(`${ENDPOINTS.EDIT_TASK}/${body.id}`, {
+async function _editTaskClient(body: TaskModel): Promise<TaskModel> {
+  const response = await fetch(`${ENDPOINTS.EDIT_TASK}/${body.id}`, {
     method: "PUT",
     body: JSON.stringify(body),
     headers: {
       "Content-Type": "application/json",
     },
-  }).then((response) => response.json());
+  });
+  return await response.json();
 }
 
 export function* editTaskSaga(action: EditTaskAction) {
@@ -29,15 +38,22 @@ export function* editTaskSaga(action: EditTaskAction) {
       );
     }
 
-    const response: TaskModel = yield call(editTaskClient, {
-      ...task,
-      ...action.payload.fields,
-    });
+    const response: TaskModel = yield call(
+      _editTaskClient,
+      toTaskModel({
+        ...task,
+        ...action.payload.fields,
+      })
+    );
 
     yield put({
       type: editTasksApiActions.success,
       payload: response,
     });
+
+    logger.info(`Task edited successfully - ${response.id}`);
+
+    yield _handleTaskTimer(response, task);
   } catch (error) {
     const errorMessage: ErrorMessage = {
       message:
@@ -53,6 +69,42 @@ export function* editTaskSaga(action: EditTaskAction) {
   }
 }
 
+function* _handleTaskTimer(response: TaskModel, task: TaskModel) {
+  logger.info(`_handleTaskTimer - ${response.id}`);
+
+  if (response.status === "IN_PROGRESS" && task.status !== "IN_PROGRESS") {
+    yield put({
+      type: startTimer.type,
+      payload: { id: response.id },
+    });
+  } else if (response.status !== "IN_PROGRESS") {
+    yield put({
+      type: stopTimer.type,
+      payload: { id: response.id },
+    });
+  }
+}
+
+function* handleProgressTimerSaga({
+  type,
+  payload,
+}: ReturnType<typeof startTimer | typeof stopTimer>) {
+  logger.info(`handleProgressTimerSaga - ${type}`);
+
+  if (type === stopTimer.type) {
+    return;
+  }
+
+  while (true) {
+    yield delay(1000);
+    yield put(incrementTimer(payload));
+  }
+}
+
 export function* watchTaskSagas() {
   yield takeLatest(editTasksApiActions.start, editTaskSaga);
+  yield takeLatestById(
+    [startTimer.type, stopTimer.type],
+    handleProgressTimerSaga
+  );
 }

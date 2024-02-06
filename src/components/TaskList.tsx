@@ -1,9 +1,9 @@
-import type { Statuses, TaskModel } from "../types/task";
+import type { Statuses, TaskView } from "../types/task";
 import { Task } from "./Task";
 
 type TaskListProps = {
   title: string;
-  tasks: TaskModel[];
+  tasks: TaskView[];
   status?: string;
   onUpdateStatus?: (id: string, status: Statuses) => void;
 };
@@ -20,13 +20,14 @@ export function TaskList({
         {title}
       </h1>
       <ul>
-        {tasks.map(({ title, description, id }) => (
+        {tasks.map(({ title, description, id, timerSpend }) => (
           <li key={id} className="mb-4 last:mb-0">
             <Task
               id={id}
               title={title}
               description={description}
               status={status}
+              timerSpend={timerSpend}
               onUpdateStatus={onUpdateStatus}
             />
           </li>

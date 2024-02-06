@@ -8,6 +8,7 @@ type TaskProps = {
   title: string;
   description?: string;
   status?: string;
+  timerSpend?: number;
   onUpdateStatus?: (id: string, status: Statuses) => void;
 };
 
@@ -16,6 +17,7 @@ export function Task({
   title,
   description,
   status,
+  timerSpend,
   onUpdateStatus,
 }: TaskProps) {
   const handleOnUpdateStatus = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -53,6 +55,15 @@ export function Task({
           className="mt-2 text-lg leading-8 text-gray-600"
         >
           {description}
+        </p>
+      )}
+      <hr />
+      {status !== "OPEN" && (
+        <p
+          data-testid="task-timer"
+          className="mt-2 text-lg leading-8 text-gray-600"
+        >
+          Worked on for: {timerSpend}s
         </p>
       )}
     </article>
