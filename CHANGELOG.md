@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/samuelsilvadev/kanban-board/compare/v1.0.0...v1.1.0) (2024-02-05)
+
+
+### Features
+
+* edit task ([#7](https://github.com/samuelsilvadev/kanban-board/issues/7)) ([1e31891](https://github.com/samuelsilvadev/kanban-board/commit/1e3189118a8f6653a12d4ca4e1e4146c9ccf333b))
+
 ## 1.0.0 (2024-01-31)
 
 
