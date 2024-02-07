@@ -13,7 +13,10 @@ export function CreateTask() {
 
   return (
     <>
-      <button className="border border-slate-700 p-2" onClick={onOpen}>
+      <button
+        className="border border-slate-700 px-4 py-2 flex-shrink-0"
+        onClick={onOpen}
+      >
         Create Task
       </button>
       <TaskModal modalRef={ref} onClose={onClose}>

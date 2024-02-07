@@ -53,7 +53,7 @@ export function Tasks() {
       <header className="p-5 pb-0 flex justify-end">
         <CreateTask />
       </header>
-      <main className="p-5">
+      <main className="m-5 p-5 border border-slate-700">
         <ul className="flex flex-col md:flex-row w-full">
           {TASK_STATUSES.map(renderTaskList)}
         </ul>
