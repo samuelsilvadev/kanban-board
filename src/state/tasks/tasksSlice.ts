@@ -19,6 +19,7 @@ export type TasksState = {
   data: TaskView[] | null;
   loading: boolean;
   error?: ErrorMessage;
+  searchTerm: string;
 };
 
 export type EditTaskAction = PayloadAction<{
@@ -28,9 +29,12 @@ export type EditTaskAction = PayloadAction<{
 
 export type IncrementTimerAction = PayloadAction<{ id: string }>;
 
+export type SetSearchTermAction = PayloadAction<{ searchTerm: string }>;
+
 export const initialTasksState: TasksState = {
   data: null,
   loading: false,
+  searchTerm: "",
 };
 
 const incrementTimerReducer: CaseReducer<TasksState, IncrementTimerAction> = (
@@ -44,10 +48,18 @@ const incrementTimerReducer: CaseReducer<TasksState, IncrementTimerAction> = (
   }
 };
 
+const setSearchTermReducer: CaseReducer<TasksState, SetSearchTermAction> = (
+  state,
+  { payload: { searchTerm } }
+) => {
+  state.searchTerm = searchTerm;
+};
+
 const tasksSlice = createSlice({
   initialState: initialTasksState,
   name: "tasks",
   reducers: {
+    setSearchTerm: setSearchTermReducer,
     incrementTimer: incrementTimerReducer,
   },
   extraReducers: (builder) => {
@@ -157,7 +169,7 @@ export const createTask = (
   };
 };
 
-export const { incrementTimer } = tasksSlice.actions;
+export const { incrementTimer, setSearchTerm } = tasksSlice.actions;
 
 export const startTimer = createAction<IncrementTimerAction["payload"]>(
   `${tasksSlice.name}/startTimer`

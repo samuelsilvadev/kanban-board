@@ -6,6 +6,7 @@ import { useTasks } from "../state/tasks/useTasks";
 import { Loader } from "../components/Loader";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { CreateTask } from "../components/CreateTask";
+import { Search } from "../components/Search";
 
 export function Tasks() {
   const { isLoaded, isLoading, tasks, error, editTask, getTasks } = useTasks();
@@ -50,7 +51,8 @@ export function Tasks() {
 
   return (
     <>
-      <header className="p-5 pb-0 flex justify-end">
+      <header className="p-5 pb-0 flex justify-end gap-5">
+        <Search />
         <CreateTask />
       </header>
       <main className="m-5 p-5 border border-slate-700">

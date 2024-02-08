@@ -199,4 +199,40 @@ describe("<Tasks />", () => {
       screen.queryByRole("button", { name: /Save/ })
     ).not.toBeInTheDocument();
   });
+
+  it("should search tasks", async () => {
+    render(
+      <Provider store={buildStore()}>
+        <Tasks />
+      </Provider>
+    );
+
+    await waitForLoadingToBeRemoved();
+
+    const searchInput = screen.getByLabelText("Search for a task");
+
+    await userEvent.type(searchInput, TASKS_MOCK[0].title);
+
+    expect(screen.getByText(TASKS_MOCK[0].title)).toBeVisible();
+    expect(screen.queryByText(TASKS_MOCK[1].title)).not.toBeInTheDocument();
+    expect(screen.queryByText(TASKS_MOCK[2].title)).not.toBeInTheDocument();
+  });
+
+  it("should display empty page when search is without result", async () => {
+    render(
+      <Provider store={buildStore()}>
+        <Tasks />
+      </Provider>
+    );
+
+    await waitForLoadingToBeRemoved();
+
+    const searchInput = screen.getByLabelText("Search for a task");
+
+    await userEvent.type(searchInput, "This does not exist");
+
+    TASKS_MOCK.forEach((task) => {
+      expect(screen.queryByText(task.title)).not.toBeInTheDocument();
+    });
+  });
 });
