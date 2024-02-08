@@ -19,7 +19,7 @@ export type TasksState = {
   data: TaskView[] | null;
   loading: boolean;
   error?: ErrorMessage;
-  query: string;
+  searchTerm: string;
 };
 
 export type EditTaskAction = PayloadAction<{
@@ -29,12 +29,12 @@ export type EditTaskAction = PayloadAction<{
 
 export type IncrementTimerAction = PayloadAction<{ id: string }>;
 
-export type SetSearchTermAction = PayloadAction<{ query: string }>;
+export type SetSearchTermAction = PayloadAction<{ searchTerm: string }>;
 
 export const initialTasksState: TasksState = {
   data: null,
   loading: false,
-  query: "",
+  searchTerm: "",
 };
 
 const incrementTimerReducer: CaseReducer<TasksState, IncrementTimerAction> = (
@@ -50,9 +50,9 @@ const incrementTimerReducer: CaseReducer<TasksState, IncrementTimerAction> = (
 
 const setSearchTermReducer: CaseReducer<TasksState, SetSearchTermAction> = (
   state,
-  { payload: { query } }
+  { payload: { searchTerm } }
 ) => {
-  state.query = query;
+  state.searchTerm = searchTerm;
 };
 
 const tasksSlice = createSlice({

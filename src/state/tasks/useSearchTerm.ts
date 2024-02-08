@@ -1,17 +1,17 @@
 import { useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "../store";
-import { selectQuery } from "./selectors";
+import { selectSearchTerm } from "./selectors";
 import { setSearchTerm } from "./tasksSlice";
 
 export function useSearchTerm() {
-  const query = useAppSelector(selectQuery);
+  const searchTerm = useAppSelector(selectSearchTerm);
   const dispatch = useAppDispatch();
 
   return {
-    query,
+    searchTerm,
     setSearchTerm: useCallback(
-      (query: string) => {
-        dispatch(setSearchTerm({ query }));
+      (searchTerm: string) => {
+        dispatch(setSearchTerm({ searchTerm }));
       },
       [dispatch]
     ),

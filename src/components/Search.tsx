@@ -1,7 +1,7 @@
 import { useSearchTerm } from "../state/tasks/useSearchTerm";
 
 export function Search() {
-  const { query, setSearchTerm } = useSearchTerm();
+  const { searchTerm, setSearchTerm } = useSearchTerm();
 
   const handleOnChange: React.ChangeEventHandler<HTMLInputElement> = (
     event
@@ -15,7 +15,7 @@ export function Search() {
         Search for a task
       </label>
       <input
-        value={query}
+        value={searchTerm}
         onChange={handleOnChange}
         id="search"
         type="search"
