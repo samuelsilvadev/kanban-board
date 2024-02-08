@@ -7,7 +7,15 @@ function _selectTasks(state: RootState): TaskView[] {
   return state.tasks.data ?? [];
 }
 
-export const selectTasks = createSelector([_selectTasks], (tasks) => tasks);
+export const selectTasks = createSelector(
+  [_selectTasks, selectQuery],
+  (tasks, query) =>
+    tasks.filter((task) => task.title.match(new RegExp(query, "i")))
+);
+
+export function selectQuery(state: RootState): string {
+  return state.tasks.query;
+}
 
 export function selectIsTasksLoading(state: RootState): boolean {
   return state.tasks.loading;
