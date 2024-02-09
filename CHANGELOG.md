@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.1](https://github.com/samuelsilvadev/kanban-board/compare/v1.5.0...v1.5.1) (2024-02-09)
+
+
+### Bug Fixes
+
+* adjust api handling to be in a single facade and proper handle errors between &gt; 299 status code ([#16](https://github.com/samuelsilvadev/kanban-board/issues/16)) ([0c28b35](https://github.com/samuelsilvadev/kanban-board/commit/0c28b35e974c20fa8d4e6696cdbd651904137889))
+
 ## [1.5.0](https://github.com/samuelsilvadev/kanban-board/compare/v1.4.0...v1.5.0) (2024-02-09)
 
 
