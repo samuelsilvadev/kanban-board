@@ -1,23 +1,22 @@
+import { STATUS_TO_TITLE_MAPPER } from "../consts/statuses";
 import type { Statuses, TaskView } from "../types/task";
 import { Task } from "./Task";
 
 type TaskListProps = {
-  title: string;
   tasks: TaskView[];
-  status?: string;
+  status?: Statuses;
   onUpdateStatus?: (id: string, status: Statuses) => void;
 };
 
 export function TaskList({
-  title,
   tasks,
-  status,
+  status = "OPEN",
   onUpdateStatus,
 }: TaskListProps) {
   return (
     <article>
       <h1 className="text-3xl font-bold tracking-tight text-center mb-4">
-        {title}
+        {STATUS_TO_TITLE_MAPPER.get(status)}
       </h1>
       <ul>
         {tasks.map(({ title, description, id, timerSpend }) => (
