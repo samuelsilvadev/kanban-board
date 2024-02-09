@@ -1,7 +1,7 @@
 import {
+  selectGroupedByStatusAndFilteredTasks,
   selectIsTasksLoaded,
   selectIsTasksLoading,
-  selectTasks,
   selectTasksError,
 } from "./selectors";
 import { useCallback } from "react";
@@ -10,7 +10,7 @@ import { editTask, getTasks } from "./tasksSlice";
 import { useAppDispatch, useAppSelector } from "../store";
 
 export function useTasks() {
-  const tasks = useAppSelector(selectTasks);
+  const tasks = useAppSelector(selectGroupedByStatusAndFilteredTasks);
   const isLoading = useAppSelector(selectIsTasksLoading);
   const isLoaded = useAppSelector(selectIsTasksLoaded);
   const error = useAppSelector(selectTasksError);
