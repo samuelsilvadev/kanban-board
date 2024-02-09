@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/samuelsilvadev/kanban-board/compare/v1.4.0...v1.5.0) (2024-02-09)
+
+
+### Features
+
+* move logic to group tasks to a selector ([#14](https://github.com/samuelsilvadev/kanban-board/issues/14)) ([13dff56](https://github.com/samuelsilvadev/kanban-board/commit/13dff56beef1f4469c6a8a948686bbc3f192acaf))
+
 ## [1.4.0](https://github.com/samuelsilvadev/kanban-board/compare/v1.3.0...v1.4.0) (2024-02-08)
 
 
