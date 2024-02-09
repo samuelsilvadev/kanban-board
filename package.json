@@ -31,6 +31,7 @@
     "autoprefixer": "^10.4.16",
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
+    "eslint-plugin-unused-imports": "^3.0.0",
     "husky": "4.3.8",
     "json-server": "^0.17.4",
     "lint-staged": "^11.2.3",
@@ -56,6 +57,9 @@
     "server": "json-server --watch database/db.json --port 3001"
   },
   "eslintConfig": {
+    "plugins": [
+      "unused-imports"
+    ],
     "globals": {
       "globalThis": "writable"
     },
@@ -64,7 +68,19 @@
       "react-app/jest"
     ],
     "rules": {
-      "jest/no-conditional-expect": "off"
+      "jest/no-conditional-expect": "off",
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "unused-imports/no-unused-imports": "error",
+      "unused-imports/no-unused-vars": [
+        "error",
+        {
+          "vars": "all",
+          "varsIgnorePattern": "^_",
+          "args": "after-used",
+          "argsIgnorePattern": "^_"
+        }
+      ]
     }
   },
   "browserslist": {
