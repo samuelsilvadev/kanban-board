@@ -2,7 +2,7 @@ import { call, delay, put, select, takeLatest } from "redux-saga/effects";
 import { toTaskModel } from "../../mappers/toTaskModel";
 import { ErrorMessage } from "../../types/error";
 import { TaskModel } from "../../types/task";
-import { ENDPOINTS } from "../../utils/api";
+import { ENDPOINTS, fetchFacade } from "../../utils/api";
 import { logger } from "../../utils/logger";
 import { takeLatestById } from "../rootSaga";
 import { selectTaskById } from "./selectors";
@@ -14,15 +14,11 @@ import {
   stopTimer,
 } from "./tasksSlice";
 
-async function _editTaskClient(body: TaskModel): Promise<TaskModel> {
-  const response = await fetch(`${ENDPOINTS.EDIT_TASK}/${body.id}`, {
+function _editTaskClient(body: TaskModel): Promise<TaskModel> {
+  return fetchFacade(`${ENDPOINTS.EDIT_TASK}/${body.id}`, {
     method: "PUT",
     body: JSON.stringify(body),
-    headers: {
-      "Content-Type": "application/json",
-    },
   });
-  return await response.json();
 }
 
 export function* editTaskSaga(action: EditTaskAction) {
