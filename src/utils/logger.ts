@@ -1,10 +1,10 @@
-export function error(message: string) {
+function error<T>(target: T) {
   if (process.env.NODE_ENV !== "test") {
-    console.log(`🧨 - ERROR - ${message}`);
+    console.log(`🧨 - ERROR -`, target);
   }
 }
 
-export function info<T>(target: T) {
+function info<T>(target: T) {
   if (process.env.NODE_ENV !== "test") {
     console.log(`👷‍♀️ - INFO -`, target);
   }
