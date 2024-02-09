@@ -1,5 +1,6 @@
 import { AnyAction, Middleware } from "redux";
 import { ErrorMessage } from "../../types/error";
+import { fetchFacade } from "../../utils/api";
 import { logger } from "../../utils/logger";
 
 export const API_CALL_ACTION_TYPE = "API_CALL";
@@ -35,8 +36,7 @@ export const apiMiddleware: Middleware =
 
     next({ type: apiActions.start });
 
-    fetch(url, options)
-      .then((response) => response.json())
+    fetchFacade(url, options)
       .then((response) => {
         next({ type: apiActions.success, payload: response });
       })
