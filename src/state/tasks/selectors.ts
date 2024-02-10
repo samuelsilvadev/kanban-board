@@ -2,6 +2,7 @@ import { createSelector } from "@reduxjs/toolkit";
 import type { ErrorMessage } from "../../types/error";
 import type { Statuses, TaskView } from "../../types/task";
 import type { RootState } from "../store";
+import { selectSearchTerm } from "../ui/tasks/selectors";
 
 function _selectTasks(state: RootState): TaskView[] {
   return state.tasks.data ?? [];
@@ -12,10 +13,6 @@ export const selectTasks = createSelector(
   (tasks, searchTerm) =>
     tasks.filter((task) => task.title.match(new RegExp(searchTerm, "i")))
 );
-
-export function selectSearchTerm(state: RootState): string {
-  return state.tasks.searchTerm;
-}
 
 export function selectIsTasksLoading(state: RootState): boolean {
   return state.tasks.loading;
