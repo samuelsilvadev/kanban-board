@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "../store";
-import { selectSearchTerm } from "./selectors";
-import { setSearchTerm } from "./tasksSlice";
+import { selectSearchTerm } from "../ui/tasks/selectors";
+import { setSearchTerm } from "../ui/tasks/tasksUISlice";
 
 export function useSearchTerm() {
   const searchTerm = useAppSelector(selectSearchTerm);

@@ -3,10 +3,10 @@ import {
   selectIsTasksLoaded,
   selectIsTasksLoading,
   selectTasksError,
-} from "./selectors";
+} from "../tasks/selectors";
 import { useCallback } from "react";
 import type { TaskModel } from "../../types/task";
-import { editTask, getTasks } from "./tasksSlice";
+import { editTask, getTasks } from "../tasks/tasksSlice";
 import { useAppDispatch, useAppSelector } from "../store";
 
 export function useTasks() {

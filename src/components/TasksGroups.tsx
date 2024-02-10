@@ -1,4 +1,4 @@
-import { useTasks } from "../state/tasks/useTasks";
+import { useTasks } from "../state/hooks/useTasks";
 import { Statuses } from "../types/task";
 import { isValidStatus } from "../validators/isValidStatus";
 import { TaskList } from "./TaskList";

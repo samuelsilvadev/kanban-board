@@ -1,4 +1,4 @@
-import { useSearchTerm } from "../state/tasks/useSearchTerm";
+import { useSearchTerm } from "../state/hooks/useSearchTerm";
 
 export function Search() {
   const { searchTerm, setSearchTerm } = useSearchTerm();
