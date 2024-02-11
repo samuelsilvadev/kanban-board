@@ -1,22 +1,58 @@
 {
+  "projects": [
+    {
+      "id": "1",
+      "title": "Short term project",
+      "description": ""
+    },
+    {
+      "id": "2",
+      "title": "Long term project",
+      "description": ""
+    }
+  ],
   "tasks": [
     {
       "id": "1",
       "title": "Task 1",
       "description": "Description 1",
-      "status": "OPEN"
+      "status": "OPEN",
+      "projectId": "1"
     },
     {
       "id": "3",
       "title": "Task 3",
       "description": "",
-      "status": "IN_PROGRESS"
+      "status": "IN_PROGRESS",
+      "projectId": "1"
+    },
+    {
+      "id": "2",
+      "title": "Task 4",
+      "description": "",
+      "status": "IN_PROGRESS",
+      "projectId": "2"
+    },
+    {
+      "description": "I need clothes for gym tomorrow",
+      "title": "do laudry",
+      "projectId": "1",
+      "status": "OPEN",
+      "id": "wCKZQLQ"
+    },
+    {
+      "description": "Marley is getting hungrier",
+      "title": "buy dog food",
+      "projectId": "1",
+      "status": "DONE",
+      "id": "KoYiptv"
     },
     {
       "description": "",
-      "title": "Task 4",
-      "status": "DONE",
-      "id": "2"
+      "title": "call mom everyday",
+      "projectId": "2",
+      "status": "OPEN",
+      "id": "3SOUC9e"
     }
   ]
 }
