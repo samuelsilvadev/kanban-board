@@ -1,6 +1,6 @@
 {
   "name": "create-react-app-n",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.6",
