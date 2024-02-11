@@ -1,4 +1,8 @@
 import { PayloadAction, createSlice, CaseReducer } from "@reduxjs/toolkit";
+import {
+  getProjectsApiActions,
+  GetProjectsSuccessAction,
+} from "../../projects/projectsSlice";
 
 export type TasksUIState = {
   currentProjectId: string | null;
@@ -36,6 +40,14 @@ const tasksUISlice = createSlice({
   reducers: {
     setSearchTerm: setSearchTermReducer,
     setCurrentProjectId: setCurrentProjectReducer,
+  },
+  extraReducers: (builder) => {
+    builder.addCase(
+      getProjectsApiActions.success,
+      (state, { payload }: GetProjectsSuccessAction) => {
+        state.currentProjectId = payload.result[0];
+      }
+    );
   },
 });
 

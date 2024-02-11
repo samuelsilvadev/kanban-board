@@ -5,9 +5,13 @@ export function makeApiUrl(endpoint: string): string {
 }
 
 export const ENDPOINTS = {
+  /**
+   * @deprecated
+   */
   GET_TASKS: makeApiUrl("/tasks"),
   CREATE_TASK: makeApiUrl("/tasks"),
   EDIT_TASK: makeApiUrl("/tasks"),
+  GET_PROJECTS: makeApiUrl("/projects?_embed=tasks"),
 };
 
 export function fetchFacade<Response>(

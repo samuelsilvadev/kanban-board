@@ -1,33 +1,43 @@
 import { useEffect } from "react";
-import { useTasks } from "../state/hooks/useTasks";
 import { Loader } from "../components/Loader";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { CreateTask } from "../components/CreateTask";
 import { Search } from "../components/Search";
 import { TasksGroups } from "../components/TasksGroups";
+import { useProjects } from "../state/hooks/useProjects";
+import { ChangeProjectSelector } from "../components/ChangeProjectSelector";
+import { useTasks } from "../state/hooks/useTasks";
 
 export function Tasks() {
-  const { isLoaded, isLoading, error, getTasks } = useTasks();
+  const { isLoaded, isLoading, error } = useProjects();
+  const { isLoading: isTasksLoading, error: tasksError } = useTasks();
+  const { getProjects } = useProjects();
 
   useEffect(() => {
-    getTasks();
-  }, [getTasks]);
+    getProjects();
+  }, [getProjects]);
 
   const handleOnReload = () => {
-    getTasks();
+    getProjects();
   };
 
-  if (error) {
-    return <ErrorDisplay message={error.message} onReload={handleOnReload} />;
+  if (error || tasksError) {
+    return (
+      <ErrorDisplay
+        message={error?.message ?? tasksError?.message ?? "Unknown error"}
+        onReload={handleOnReload}
+      />
+    );
   }
 
-  if (!isLoaded || isLoading) {
+  if (!isLoaded || isLoading || isTasksLoading) {
     return <Loader />;
   }
 
   return (
     <>
-      <header className="p-5 pb-0 flex justify-end gap-5">
+      <header className="p-5 pb-0 flex flex-wrap md:flex-nowrap items-end justify-end gap-5">
+        <ChangeProjectSelector />
         <Search />
         <CreateTask />
       </header>

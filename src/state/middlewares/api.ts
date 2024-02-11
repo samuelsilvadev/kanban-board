@@ -1,4 +1,6 @@
+import { normalize } from "normalizr";
 import { AnyAction, Middleware } from "redux";
+import { Resources, RESOURCE_TO_SCHEMAS } from "../../consts/schemas";
 import { ErrorMessage } from "../../types/error";
 import { fetchFacade } from "../../utils/api";
 import { logger } from "../../utils/logger";
@@ -11,6 +13,7 @@ export type ApiCallAction = {
     url: string;
     options?: RequestInit;
     entity: string;
+    schema?: Resources;
   };
 };
 
@@ -31,14 +34,26 @@ export const apiMiddleware: Middleware =
     }
 
     const safeAction = action as ApiCallAction;
-    const { url, options, entity } = safeAction.payload;
+    const {
+      url,
+      options,
+      entity,
+      schema: schemaIdentification,
+    } = safeAction.payload;
     const apiActions = getApiActions(entity);
 
     next({ type: apiActions.start });
 
+    const schema = schemaIdentification
+      ? RESOURCE_TO_SCHEMAS.get(schemaIdentification)
+      : undefined;
+
     fetchFacade(url, options)
       .then((response) => {
-        next({ type: apiActions.success, payload: response });
+        next({
+          type: apiActions.success,
+          payload: schema ? normalize(response, schema) : response,
+        });
       })
       .catch((error) => {
         const errorMessage: ErrorMessage = {

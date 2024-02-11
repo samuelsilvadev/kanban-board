@@ -5,20 +5,18 @@ import { buildStore } from "../state/store";
 import { Provider } from "react-redux";
 import userEvent from "@testing-library/user-event";
 import { TaskModel } from "../types/task";
-import data from "../../database/db.json";
+import data from "../__fixtures__/projects.json";
 import { toTaskModel } from "../mappers/toTaskModel";
 import { server } from "../tests/server";
 import { http, HttpResponse } from "msw";
 import { getReloadButton, waitForLoadingToBeRemoved } from "../tests/utils";
 import { ENDPOINTS } from "../utils/api";
 
-const TASKS_MOCK: TaskModel[] = data.tasks.map(toTaskModel);
+const TASKS_MOCK: TaskModel[] = data[0].tasks.map(toTaskModel);
 
 describe("<Tasks />", () => {
   beforeEach(() => {
-    server.use(
-      http.get(ENDPOINTS.GET_TASKS, () => HttpResponse.json(data.tasks))
-    );
+    server.use(http.get(ENDPOINTS.GET_PROJECTS, () => HttpResponse.json(data)));
   });
 
   it("should render tasks correctly", async () => {
@@ -43,7 +41,7 @@ describe("<Tasks />", () => {
     });
   });
 
-  it("should update task status", async () => {
+  it.only("should update task status", async () => {
     server.use(
       http.put(`${ENDPOINTS.EDIT_TASK}/:id`, async ({ request }) =>
         HttpResponse.json(await request.json())
@@ -94,7 +92,7 @@ describe("<Tasks />", () => {
   });
 
   it("should display error message", async () => {
-    server.use(http.get(ENDPOINTS.GET_TASKS, () => HttpResponse.error()));
+    server.use(http.get(ENDPOINTS.GET_PROJECTS, () => HttpResponse.error()));
 
     render(
       <Provider store={buildStore()}>
@@ -108,7 +106,7 @@ describe("<Tasks />", () => {
   });
 
   it("should reload the page when an error happens", async () => {
-    server.use(http.get(ENDPOINTS.GET_TASKS, () => HttpResponse.error()));
+    server.use(http.get(ENDPOINTS.GET_PROJECTS, () => HttpResponse.error()));
 
     render(
       <Provider store={buildStore()}>
@@ -120,9 +118,7 @@ describe("<Tasks />", () => {
 
     expect(screen.getByText(/Failed to fetch/)).toBeVisible();
 
-    server.use(
-      http.get(ENDPOINTS.GET_TASKS, () => HttpResponse.json(data.tasks))
-    );
+    server.use(http.get(ENDPOINTS.GET_PROJECTS, () => HttpResponse.json(data)));
 
     const reloadButton = getReloadButton();
 

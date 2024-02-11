@@ -9,11 +9,12 @@ export type RawTaskModel = {
   title: string;
   description: string;
   status: string;
+  projectId: string;
 };
 
 export type CreateTaskBody = Pick<
   RawTaskModel,
-  "title" | "description" | "status"
+  "title" | "description" | "status" | "projectId"
 >;
 
 export type TaskView = TaskModel & { timerSpend: number };

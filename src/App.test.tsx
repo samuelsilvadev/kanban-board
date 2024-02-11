@@ -5,15 +5,13 @@ import { MemoryRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { buildStore } from "./state/store";
 import { server } from "./tests/server";
-import data from "../database/db.json";
+import data from "./__fixtures__/projects.json";
 import { waitForLoadingToBeRemoved } from "./tests/utils";
 import { ENDPOINTS } from "./utils/api";
 
 describe("<App />", () => {
   beforeEach(() => {
-    server.use(
-      http.get(ENDPOINTS.GET_TASKS, () => HttpResponse.json(data.tasks))
-    );
+    server.use(http.get(ENDPOINTS.GET_PROJECTS, () => HttpResponse.json(data)));
   });
 
   it("should render root page", async () => {

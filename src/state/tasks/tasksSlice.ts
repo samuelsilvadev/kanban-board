@@ -1,3 +1,4 @@
+/* eslint-disable unused-imports/no-unused-vars */
 import type { ErrorMessage } from "../../types/error";
 import type { CreateTaskBody, TaskView, TaskModel } from "../../types/task";
 import {
@@ -13,10 +14,14 @@ import {
   getApiActions,
 } from "../middlewares/api";
 import { ENDPOINTS } from "../../utils/api";
-import { toTaskView } from "../../mappers/toTaskModel";
+import { toTaskModel, toTaskView } from "../../mappers/toTaskModel";
+import {
+  getProjectsApiActions,
+  GetProjectsSuccessAction,
+} from "../projects/projectsSlice";
 
 export type TasksState = {
-  data: TaskView[] | null;
+  data: Record<string, TaskView> | null;
   loading: boolean;
   error?: ErrorMessage;
 };
@@ -37,7 +42,7 @@ const incrementTimerReducer: CaseReducer<TasksState, IncrementTimerAction> = (
   state,
   { payload: { id } }
 ) => {
-  const task = state.data?.find((task) => task.id === id);
+  const task = state.data?.[id];
 
   if (task) {
     task.timerSpend += 1;
@@ -57,25 +62,31 @@ const tasksSlice = createSlice({
         state.loading = false;
 
         if (!state.data) {
-          return;
+          state.data = {};
         }
 
-        const taskIndex =
-          state.data.findIndex((task) => task.id === payload.id) ?? -1;
-
-        if (taskIndex >= 0) {
-          state.data[taskIndex] = {
-            ...payload,
-            timerSpend: state.data[taskIndex].timerSpend || 0,
-          };
-        }
+        state.data[payload.id] = {
+          ...payload,
+          timerSpend: state.data[payload.id].timerSpend || 0,
+        };
       }
     );
     builder.addCase(
-      getTasksApiActions.success,
-      (state, { payload }: PayloadAction<TaskModel[]>) => {
+      getProjectsApiActions.success,
+      (state, { payload }: GetProjectsSuccessAction) => {
         state.loading = false;
-        state.data = payload.map(toTaskView);
+
+        if (!payload.entities.tasks) {
+          return;
+        }
+
+        state.data = Object.entries(payload.entities.tasks).reduce<
+          Record<string, TaskView>
+        >((combinedTasks, [id, task]) => {
+          combinedTasks[id] = toTaskView(toTaskModel(task));
+
+          return combinedTasks;
+        }, {});
       }
     );
     builder.addCase(
@@ -83,16 +94,19 @@ const tasksSlice = createSlice({
       (state, { payload }: PayloadAction<TaskModel>) => {
         state.loading = false;
         state.error = undefined;
-        state.data?.push(toTaskView(payload));
+
+        if (!state.data) {
+          state.data = {};
+        }
+
+        state.data[payload.id] = toTaskView(payload);
       }
     );
     builder.addMatcher(
       (action: AnyAction) =>
-        [
-          getTasksApiActions.start,
-          createTaskApiActions.start,
-          editTasksApiActions.start,
-        ].includes(action.type),
+        [createTaskApiActions.start, editTasksApiActions.start].includes(
+          action.type
+        ),
       (state) => {
         state.loading = true;
         state.error = undefined;
@@ -100,11 +114,9 @@ const tasksSlice = createSlice({
     );
     builder.addMatcher(
       (action: AnyAction) =>
-        [
-          getTasksApiActions.failure,
-          createTaskApiActions.failure,
-          editTasksApiActions.failure,
-        ].includes(action.type),
+        [createTaskApiActions.failure, editTasksApiActions.failure].includes(
+          action.type
+        ),
       (state, { payload }: PayloadAction<ErrorMessage>) => {
         state.loading = false;
         state.error = payload;
@@ -114,29 +126,17 @@ const tasksSlice = createSlice({
 });
 
 enum Entities {
-  GET_TASKS = "GET_TASKS",
   CREATE_TASK = "CREATE_TASK",
   EDIT_TASK = "EDIT_TASK",
 }
 
 export const createTaskApiActions = getApiActions(Entities.CREATE_TASK);
-export const getTasksApiActions = getApiActions(Entities.GET_TASKS);
 export const editTasksApiActions = getApiActions(Entities.EDIT_TASK);
 
 export const editTask = createAction<
   EditTaskAction["payload"],
   typeof editTasksApiActions.start
 >(editTasksApiActions.start);
-
-export const getTasks = (): ApiCallAction => {
-  return {
-    type: API_CALL_ACTION_TYPE,
-    payload: {
-      url: ENDPOINTS.GET_TASKS,
-      entity: Entities.GET_TASKS,
-    },
-  };
-};
 
 export const createTask = (
   body: Omit<CreateTaskBody, "status">
