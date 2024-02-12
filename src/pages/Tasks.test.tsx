@@ -41,7 +41,7 @@ describe("<Tasks />", () => {
     });
   });
 
-  it.only("should update task status", async () => {
+  it("should update task status", async () => {
     server.use(
       http.put(`${ENDPOINTS.EDIT_TASK}/:id`, async ({ request }) =>
         HttpResponse.json(await request.json())
