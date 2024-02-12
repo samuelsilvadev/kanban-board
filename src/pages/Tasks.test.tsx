@@ -278,4 +278,37 @@ describe("<Tasks />", () => {
       ).selected
     ).toBe(true);
   });
+
+  it("should list different tasks when switching projects", async () => {
+    render(
+      <Provider store={buildStore()}>
+        <Tasks />
+      </Provider>
+    );
+
+    await waitForLoadingToBeRemoved();
+
+    const firstProjectTasks = data[0].tasks.map(toTaskModel);
+    const secondProjectTasks = data[1].tasks.map(toTaskModel);
+
+    firstProjectTasks.forEach(({ title }) => {
+      expect(screen.getByText(title)).toBeVisible();
+    });
+
+    secondProjectTasks.forEach(({ title }) => {
+      expect(screen.queryByText(title)).not.toBeInTheDocument();
+    });
+
+    const changeProjectSelector = screen.getByLabelText("Select project:");
+
+    await userEvent.selectOptions(changeProjectSelector, "2");
+
+    firstProjectTasks.forEach(({ title }) => {
+      expect(screen.queryByText(title)).not.toBeInTheDocument();
+    });
+
+    secondProjectTasks.forEach(({ title }) => {
+      expect(screen.getByText(title)).toBeVisible();
+    });
+  });
 });
