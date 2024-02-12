@@ -231,4 +231,51 @@ describe("<Tasks />", () => {
       expect(screen.queryByText(task.title)).not.toBeInTheDocument();
     });
   });
+
+  it("should switch projects", async () => {
+    render(
+      <Provider store={buildStore()}>
+        <Tasks />
+      </Provider>
+    );
+
+    await waitForLoadingToBeRemoved();
+
+    const firstProjectTitle = data[0].title;
+    const secondProjectTitle = data[1].title;
+
+    expect(
+      (
+        screen.getByRole("option", {
+          name: firstProjectTitle,
+        }) as HTMLOptionElement
+      ).selected
+    ).toBe(true);
+    expect(
+      (
+        screen.getByRole("option", {
+          name: secondProjectTitle,
+        }) as HTMLOptionElement
+      ).selected
+    ).toBe(false);
+
+    const changeProjectSelector = screen.getByLabelText("Select project:");
+
+    await userEvent.selectOptions(changeProjectSelector, "2");
+
+    expect(
+      (
+        screen.getByRole("option", {
+          name: firstProjectTitle,
+        }) as HTMLOptionElement
+      ).selected
+    ).toBe(false);
+    expect(
+      (
+        screen.getByRole("option", {
+          name: secondProjectTitle,
+        }) as HTMLOptionElement
+      ).selected
+    ).toBe(true);
+  });
 });
