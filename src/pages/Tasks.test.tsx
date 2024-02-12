@@ -231,4 +231,84 @@ describe("<Tasks />", () => {
       expect(screen.queryByText(task.title)).not.toBeInTheDocument();
     });
   });
+
+  it("should switch projects", async () => {
+    render(
+      <Provider store={buildStore()}>
+        <Tasks />
+      </Provider>
+    );
+
+    await waitForLoadingToBeRemoved();
+
+    const firstProjectTitle = data[0].title;
+    const secondProjectTitle = data[1].title;
+
+    expect(
+      (
+        screen.getByRole("option", {
+          name: firstProjectTitle,
+        }) as HTMLOptionElement
+      ).selected
+    ).toBe(true);
+    expect(
+      (
+        screen.getByRole("option", {
+          name: secondProjectTitle,
+        }) as HTMLOptionElement
+      ).selected
+    ).toBe(false);
+
+    const changeProjectSelector = screen.getByLabelText("Select project:");
+
+    await userEvent.selectOptions(changeProjectSelector, "2");
+
+    expect(
+      (
+        screen.getByRole("option", {
+          name: firstProjectTitle,
+        }) as HTMLOptionElement
+      ).selected
+    ).toBe(false);
+    expect(
+      (
+        screen.getByRole("option", {
+          name: secondProjectTitle,
+        }) as HTMLOptionElement
+      ).selected
+    ).toBe(true);
+  });
+
+  it("should list different tasks when switching projects", async () => {
+    render(
+      <Provider store={buildStore()}>
+        <Tasks />
+      </Provider>
+    );
+
+    await waitForLoadingToBeRemoved();
+
+    const firstProjectTasks = data[0].tasks.map(toTaskModel);
+    const secondProjectTasks = data[1].tasks.map(toTaskModel);
+
+    firstProjectTasks.forEach(({ title }) => {
+      expect(screen.getByText(title)).toBeVisible();
+    });
+
+    secondProjectTasks.forEach(({ title }) => {
+      expect(screen.queryByText(title)).not.toBeInTheDocument();
+    });
+
+    const changeProjectSelector = screen.getByLabelText("Select project:");
+
+    await userEvent.selectOptions(changeProjectSelector, "2");
+
+    firstProjectTasks.forEach(({ title }) => {
+      expect(screen.queryByText(title)).not.toBeInTheDocument();
+    });
+
+    secondProjectTasks.forEach(({ title }) => {
+      expect(screen.getByText(title)).toBeVisible();
+    });
+  });
 });
