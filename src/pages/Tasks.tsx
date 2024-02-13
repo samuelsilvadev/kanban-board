@@ -9,9 +9,8 @@ import { ChangeProjectSelector } from "../components/ChangeProjectSelector";
 import { useTasks } from "../state/hooks/useTasks";
 
 export function Tasks() {
-  const { isLoaded, isLoading, error } = useProjects();
   const { isLoading: isTasksLoading, error: tasksError } = useTasks();
-  const { getProjects } = useProjects();
+  const { getProjects, isLoaded, isLoading, error } = useProjects();
 
   useEffect(() => {
     getProjects();

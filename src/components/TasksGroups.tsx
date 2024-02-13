@@ -1,10 +1,12 @@
 import { useTasks } from "../state/hooks/useTasks";
+import { useTasksData } from "../state/hooks/useTasksData";
 import { Statuses } from "../types/task";
 import { isValidStatus } from "../validators/isValidStatus";
 import { TaskList } from "./TaskList";
 
 export function TasksGroups() {
-  const { tasks, editTask } = useTasks();
+  const { editTask } = useTasks();
+  const { tasks } = useTasksData();
 
   const handleOnUpdateStatus = (id: string, status: Statuses) => {
     editTask(id, { status });

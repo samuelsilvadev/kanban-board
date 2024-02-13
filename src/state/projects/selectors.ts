@@ -3,21 +3,22 @@ import type { ErrorMessage } from "../../types/error";
 import { ProjectView } from "../../types/project";
 import { Statuses, TaskView } from "../../types/task";
 import type { RootState } from "../store";
-import { selectTaskById } from "../tasks/selectors";
+import { selectTasks } from "../tasks/selectors";
 import { selectActiveProjectId, selectSearchTerm } from "../ui/tasks/selectors";
 
-export function _selectProjects(state: RootState): ProjectView[] {
-  return Object.values(state.projects.data ?? {});
+export function _selectProjects(
+  state: RootState
+): Record<string, ProjectView> | null {
+  return state.projects.data;
 }
 
-export const selectProjects = createSelector(
-  _selectProjects,
-  (projects) => projects
+export const selectProjects = createSelector(_selectProjects, (projects) =>
+  Object.values(projects ?? {})
 );
 
 export function selectActiveProject(state: RootState) {
   const currentSelectedProjectId = selectActiveProjectId(state);
-  const projects = state.projects.data;
+  const projects = _selectProjects(state);
 
   if (
     !projects ||
@@ -27,33 +28,35 @@ export function selectActiveProject(state: RootState) {
     return null;
   }
 
-  const project = projects[currentSelectedProjectId];
-
-  return {
-    ...project,
-    tasks: project.tasks.map((taskId) => selectTaskById(state, taskId)),
-  };
+  return projects[currentSelectedProjectId];
 }
 
 export const selectGroupedByStatusAndFilteredTasks = createSelector(
-  [selectActiveProject, selectSearchTerm],
-  (project, searchTerm) => {
+  [selectActiveProject, selectSearchTerm, selectTasks],
+  (project, searchTerm, tasks) => {
     const initialGroupedTasks: Record<Statuses, TaskView[]> = {
       OPEN: [],
       IN_PROGRESS: [],
       DONE: [],
     };
 
-    return (
-      project?.tasks
-        .filter((task): task is TaskView => Boolean(task))
-        .filter((task) => task.title.match(new RegExp(searchTerm, "i")))
-        .reduce<Record<Statuses, TaskView[]>>((groupedTasks, task) => {
-          groupedTasks[task.status].push(task);
+    if (!project) {
+      return initialGroupedTasks;
+    }
 
-          return groupedTasks;
-        }, initialGroupedTasks) ?? initialGroupedTasks
-    );
+    const normalizeProject = {
+      ...project,
+      tasks: project.tasks.map((taskId) => (tasks ? tasks[taskId] : null)),
+    };
+
+    return normalizeProject.tasks
+      .filter((task): task is TaskView => Boolean(task))
+      .filter((task) => task.title.match(new RegExp(searchTerm, "i")))
+      .reduce<Record<Statuses, TaskView[]>>((groupedTasks, task) => {
+        groupedTasks[task.status].push(task);
+
+        return groupedTasks;
+      }, initialGroupedTasks);
   }
 );
 

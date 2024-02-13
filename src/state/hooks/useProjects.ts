@@ -4,9 +4,9 @@ import {
   selectProjects,
   selectProjectsError,
 } from "../projects/selectors";
-import { useCallback } from "react";
-import { getProjects } from "../projects/projectsSlice";
+import { useCallback, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "../store";
+import { getProjects } from "../projects/projectsSlice";
 
 export function useProjects() {
   const projects = useAppSelector(selectProjects);
@@ -15,11 +15,16 @@ export function useProjects() {
   const error = useAppSelector(selectProjectsError);
   const dispatch = useAppDispatch();
 
-  return {
-    error,
-    isLoaded,
-    isLoading,
-    projects,
-    getProjects: useCallback(() => dispatch(getProjects()), [dispatch]),
-  };
+  const _getProjects = useCallback(() => dispatch(getProjects()), [dispatch]);
+
+  return useMemo(
+    () => ({
+      error,
+      isLoaded,
+      isLoading,
+      projects,
+      getProjects: _getProjects,
+    }),
+    [_getProjects, error, isLoaded, isLoading, projects]
+  );
 }

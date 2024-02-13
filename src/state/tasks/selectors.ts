@@ -11,3 +11,7 @@ export function selectTasksError(state: RootState): ErrorMessage | undefined {
 export function selectTaskById(state: RootState, taskId: string) {
   return state.tasks.data?.[taskId];
 }
+
+export function selectTasks(state: RootState) {
+  return state.tasks.data;
+}
