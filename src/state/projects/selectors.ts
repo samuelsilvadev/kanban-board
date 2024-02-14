@@ -44,12 +44,8 @@ export const selectGroupedByStatusAndFilteredTasks = createSelector(
       return initialGroupedTasks;
     }
 
-    const normalizeProject = {
-      ...project,
-      tasks: project.tasks.map((taskId) => (tasks ? tasks[taskId] : null)),
-    };
-
-    return normalizeProject.tasks
+    return project.tasks
+      .map((taskId) => tasks?.[taskId])
       .filter((task): task is TaskView => Boolean(task))
       .filter((task) => task.title.match(new RegExp(searchTerm, "i")))
       .reduce<Record<Statuses, TaskView[]>>((groupedTasks, task) => {
