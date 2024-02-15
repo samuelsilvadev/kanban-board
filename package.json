@@ -32,6 +32,7 @@
     "autoprefixer": "^10.4.16",
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
+    "esbuild": "^0.20.0",
     "eslint-plugin-unused-imports": "^3.0.0",
     "husky": "4.3.8",
     "json-server": "^0.17.4",
@@ -55,7 +56,9 @@
     "lint": "eslint . --ext .tsx,.ts,.js --max-warnings=0",
     "release": "DISABLE_CZ=true standard-version",
     "check-types": "tsc",
-    "server": "json-server --watch database/db.json --port 3001"
+    "server": "json-server --watch database/db.json --port 3001",
+    "preserver:dev": "touch server-dist/public/error.html && touch server-dist/public/style.css",
+    "server:dev": "esbuild server/index.ts --bundle --outdir=server-dist --platform=node && node server-dist/index.js"
   },
   "eslintConfig": {
     "plugins": [
