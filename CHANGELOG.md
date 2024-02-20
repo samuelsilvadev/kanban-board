@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.0](https://github.com/samuelsilvadev/kanban-board/compare/v1.6.0...v1.7.0) (2024-02-20)
+
+
+### Features
+
+* add authentication ([#22](https://github.com/samuelsilvadev/kanban-board/issues/22)) ([55c8aea](https://github.com/samuelsilvadev/kanban-board/commit/55c8aea73de38ba69beeaed6797edd543799631d))
+
 ## [1.6.0](https://github.com/samuelsilvadev/kanban-board/compare/v1.5.1...v1.6.0) (2024-02-11)
 
 
