@@ -1,8 +1,8 @@
 import { call, delay, put, select, takeLatest } from "redux-saga/effects";
 import { toTaskModel } from "../../mappers/toTaskModel";
-import { ErrorMessage } from "../../types/error";
 import { TaskModel } from "../../types/task";
 import { ENDPOINTS, fetchFacade } from "../../utils/api";
+import { EndpointError } from "../../utils/EndpointError";
 import { logger } from "../../utils/logger";
 import { takeLatestById } from "../rootSaga";
 import { selectTaskById } from "./selectors";
@@ -51,16 +51,21 @@ export function* editTaskSaga(action: EditTaskAction) {
 
     yield _handleTaskTimer(response, task);
   } catch (error) {
-    const errorMessage: ErrorMessage = {
-      message:
-        error instanceof Error ? error.message : "Unknown error on edit task",
-    };
+    let safeError: EndpointError;
 
-    logger.error(`Error editing a task - ${errorMessage.message}`);
+    if (error instanceof EndpointError) {
+      safeError = error;
+    } else {
+      safeError = new EndpointError(
+        error instanceof Error ? error.message : "Unknown error on edit task"
+      );
+    }
+
+    logger.error(`Error editing a task - ${safeError.message}`);
 
     yield put({
       type: editTasksApiActions.failure,
-      payload: errorMessage,
+      payload: safeError,
     });
   }
 }

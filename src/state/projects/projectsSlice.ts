@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { NormalizedSchema } from "normalizr";
-import { ErrorMessage } from "../../types/error";
 import { ProjectView } from "../../types/project";
 import { RawTaskModel, TaskModel } from "../../types/task";
 import { ENDPOINTS } from "../../utils/api";
+import { EndpointError } from "../../utils/EndpointError";
 import {
   ApiCallAction,
   API_CALL_ACTION_TYPE,
@@ -24,7 +24,7 @@ export type GetProjectsSuccessAction = PayloadAction<
 export type ProjectsState = {
   data: Record<string, ProjectView> | null;
   loading: boolean;
-  error?: ErrorMessage;
+  error?: EndpointError;
 };
 
 export const initialProjectsState: ProjectsState = {
@@ -43,7 +43,7 @@ const projectsSlice = createSlice({
     });
     builder.addCase(
       getProjectsApiActions.failure,
-      (state, { payload }: PayloadAction<ErrorMessage>) => {
+      (state, { payload }: PayloadAction<EndpointError>) => {
         state.loading = false;
         state.error = payload;
       }
@@ -87,6 +87,9 @@ export const getProjects = (): ApiCallAction => {
       url: ENDPOINTS.GET_PROJECTS,
       entity: Entities.GET_PROJECTS,
       schema: "projects",
+      options: {
+        credentials: "include",
+      },
     },
   };
 };

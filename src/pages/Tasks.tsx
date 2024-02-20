@@ -25,6 +25,7 @@ export function Tasks() {
       <ErrorDisplay
         message={error?.message ?? tasksError?.message ?? "Unknown error"}
         onReload={handleOnReload}
+        errorStatus={error?.status || tasksError?.status}
       />
     );
   }

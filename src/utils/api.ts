@@ -1,3 +1,5 @@
+import { EndpointError } from "./EndpointError";
+
 const BASE_URL = process.env.REACT_APP_SERVER_BASE_URL;
 
 export function makeApiUrl(endpoint: string): string {
@@ -12,6 +14,8 @@ export const ENDPOINTS = {
   CREATE_TASK: makeApiUrl("/tasks"),
   EDIT_TASK: makeApiUrl("/tasks"),
   GET_PROJECTS: makeApiUrl("/projects?_embed=tasks"),
+  GET_AUTH_URL: makeApiUrl("/auth/url"),
+  GET_AUTH_TOKEN: makeApiUrl("/auth/token"),
 };
 
 export function fetchFacade<Response>(
@@ -32,7 +36,7 @@ export function fetchFacade<Response>(
   )
     .then((response) => {
       if (!response.ok) {
-        throw new Error(response.statusText);
+        throw new EndpointError(response.statusText, response.status);
       }
 
       return response;

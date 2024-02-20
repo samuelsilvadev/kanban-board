@@ -1,8 +1,8 @@
 import { normalize } from "normalizr";
 import { AnyAction, Middleware } from "redux";
 import { Resources, RESOURCE_TO_SCHEMAS } from "../../consts/schemas";
-import { ErrorMessage } from "../../types/error";
 import { fetchFacade } from "../../utils/api";
+import { EndpointError } from "../../utils/EndpointError";
 import { logger } from "../../utils/logger";
 
 export const API_CALL_ACTION_TYPE = "API_CALL";
@@ -56,17 +56,23 @@ export const apiMiddleware: Middleware =
         });
       })
       .catch((error) => {
-        const errorMessage: ErrorMessage = {
-          message: error instanceof Error ? error.message : "Unknown error",
-        };
+        let safeError: EndpointError;
+
+        if (error instanceof EndpointError) {
+          safeError = error;
+        } else {
+          safeError = new EndpointError(
+            error instanceof Error ? error.message : "Unknown error"
+          );
+        }
 
         logger.error(
-          `Error caught on client - ${entity}: ${errorMessage.message}`
+          `Error caught on client - ${entity}: ${safeError.message}`
         );
 
         next({
           type: apiActions.failure,
-          payload: errorMessage,
+          payload: safeError,
         });
       });
   };
