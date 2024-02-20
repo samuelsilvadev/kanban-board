@@ -1,5 +1,4 @@
 /* eslint-disable unused-imports/no-unused-vars */
-import type { ErrorMessage } from "../../types/error";
 import type { CreateTaskBody, TaskView, TaskModel } from "../../types/task";
 import {
   PayloadAction,
@@ -19,11 +18,12 @@ import {
   getProjectsApiActions,
   GetProjectsSuccessAction,
 } from "../projects/projectsSlice";
+import { EndpointError } from "../../utils/EndpointError";
 
 export type TasksState = {
   data: Record<string, TaskView> | null;
   loading: boolean;
-  error?: ErrorMessage;
+  error?: EndpointError;
 };
 
 export type EditTaskAction = PayloadAction<{
@@ -117,7 +117,7 @@ const tasksSlice = createSlice({
         [createTaskApiActions.failure, editTasksApiActions.failure].includes(
           action.type
         ),
-      (state, { payload }: PayloadAction<ErrorMessage>) => {
+      (state, { payload }: PayloadAction<EndpointError>) => {
         state.loading = false;
         state.error = payload;
       }

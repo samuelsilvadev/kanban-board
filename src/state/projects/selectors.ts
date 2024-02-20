@@ -1,7 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
-import type { ErrorMessage } from "../../types/error";
 import { ProjectView } from "../../types/project";
 import { Statuses, TaskView } from "../../types/task";
+import { EndpointError } from "../../utils/EndpointError";
 import type { RootState } from "../store";
 import { selectTasks } from "../tasks/selectors";
 import { selectActiveProjectId, selectSearchTerm } from "../ui/tasks/selectors";
@@ -66,6 +66,6 @@ export function selectIsProjectsLoaded(state: RootState): boolean {
 
 export function selectProjectsError(
   state: RootState
-): ErrorMessage | undefined {
+): EndpointError | undefined {
   return state.projects.error;
 }
