@@ -79,12 +79,17 @@ server.get("/auth/token", async (request: Request, response: Response) => {
 
     const { id_token } = parsedResponse;
 
-    if (!id_token) {
+    if (!id_token || !config.tokenSecret) {
       return response.status(400).json({ message: "Auth error" });
     }
 
-    const { email, name, picture } = jwt.decode(id_token);
-    const user = { name, email, picture };
+    const decodedToken = jwt.decode(id_token);
+
+    if (!decodedToken || typeof decodedToken === "string") {
+      return response.status(400).json({ message: "Auth error" });
+    }
+
+    const user = decodedToken;
     const token = jwt.sign({ user }, config.tokenSecret, {
       expiresIn: config.tokenExpiration,
     });
