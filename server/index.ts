@@ -91,11 +91,11 @@ server.get("/auth/token", async (request: Request, response: Response) => {
 
     const user = decodedToken;
     const token = jwt.sign({ user }, config.tokenSecret, {
-      expiresIn: config.tokenExpiration,
+      expiresIn: config.tokenExpirationSeconds,
     });
 
     response.cookie("token", token, {
-      maxAge: config.tokenExpiration,
+      maxAge: config.tokenExpirationMilliseconds,
       httpOnly: true,
     });
 
