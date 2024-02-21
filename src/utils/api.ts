@@ -16,6 +16,7 @@ export const ENDPOINTS = {
   GET_PROJECTS: makeApiUrl("/projects?_embed=tasks"),
   GET_AUTH_URL: makeApiUrl("/auth/url"),
   GET_AUTH_TOKEN: makeApiUrl("/auth/token"),
+  LOGOUT: makeApiUrl("/auth/logout"),
 };
 
 export function fetchFacade<Response>(
@@ -41,5 +42,11 @@ export function fetchFacade<Response>(
 
       return response;
     })
-    .then((response) => response.json());
+    .then((response) => {
+      if (response.status === 204) {
+        return response;
+      }
+
+      return response.json();
+    });
 }
