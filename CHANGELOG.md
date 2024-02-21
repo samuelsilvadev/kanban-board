@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.1](https://github.com/samuelsilvadev/kanban-board/compare/v1.7.0...v1.7.1) (2024-02-21)
+
+
+### Bug Fixes
+
+* set token expiration to 1 hour ([#24](https://github.com/samuelsilvadev/kanban-board/issues/24)) ([e343a07](https://github.com/samuelsilvadev/kanban-board/commit/e343a07c1e5d7ac7e365e54932aa3ddaf15e57ff))
+
 ## [1.7.0](https://github.com/samuelsilvadev/kanban-board/compare/v1.6.0...v1.7.0) (2024-02-20)
 
 
