@@ -21,6 +21,10 @@ jobs:
         with:
           node-version: 18
 
+      - name: Prepare .env
+        run: cp .env.example .env
+        shell: bash
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
@@ -33,10 +37,14 @@ jobs:
       - name: Test
         run: yarn test:coverage
 
+      - name: e2e
+        run: yarn cypress:ci
+
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          directory: combined-coverage
 
       - name: Build
         run: yarn build
