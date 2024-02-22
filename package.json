@@ -66,7 +66,7 @@
     "test:coverage": "yarn test --coverage --ci --reporters=default --watchAll=false",
     "cypress:run": "cypress run --browser chrome",
     "cypress:open": "cypress open",
-    "cypress:ci": "start-server-and-test start http://localhost:3000 cypress:run",
+    "cypress:ci": "start-server-and-test 'npx http-server build -p 3000 -c-1 --silent --proxy http://127.0.0.1:3000?' 3000 'yarn cypress:run'",
     "eject": "react-scripts eject",
     "format": "prettier --write . --loglevel=error",
     "lint": "eslint . --ext .tsx,.ts,.js --max-warnings=0",
