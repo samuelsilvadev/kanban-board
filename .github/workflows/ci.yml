@@ -43,6 +43,9 @@ jobs:
       - name: e2e
         run: yarn cypress:ci
 
+      - name: Combine coverage reports
+        run: yarn report:combined
+
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
         env:
