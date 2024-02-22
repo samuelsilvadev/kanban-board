@@ -3,11 +3,13 @@ import { fork, put, take, takeLatest } from "redux-saga/effects";
 import { watchTaskSagas } from "./tasks/sagas";
 import { channel, Saga } from "redux-saga";
 import { PayloadAction } from "@reduxjs/toolkit";
+import { watchAuthSagas } from "./auth/sagas";
 
 export function* rootSaga() {
   logger.info("Started root saga");
 
   yield fork(watchTaskSagas);
+  yield fork(watchAuthSagas);
 }
 
 export function* takeLatestById<Payload extends { id: string }>(

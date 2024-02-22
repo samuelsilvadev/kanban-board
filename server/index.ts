@@ -14,7 +14,8 @@ const router = jsonServer.router(
   path.join(process.cwd(), "database", "db.json")
 );
 const middlewares = jsonServer.defaults();
-const NON_AUTHENTICATED_PATHS = ["/auth/url", "/auth/token"];
+const NON_AUTHENTICATED_PATHS = ["/auth/url", "/auth/token", "/auth/logout"];
+const COOKIE_TOKEN_NAME = "token";
 
 server.use(
   cors({
@@ -94,7 +95,7 @@ server.get("/auth/token", async (request: Request, response: Response) => {
       expiresIn: config.tokenExpirationSeconds,
     });
 
-    response.cookie("token", token, {
+    response.cookie(COOKIE_TOKEN_NAME, token, {
       maxAge: config.tokenExpirationMilliseconds,
       httpOnly: true,
     });
@@ -102,6 +103,14 @@ server.get("/auth/token", async (request: Request, response: Response) => {
     response.json({
       user,
     });
+  } catch (error) {
+    response.status(500).json({ message: error.message || "Server error" });
+  }
+});
+
+server.post("/auth/logout", (_request: Request, response: Response) => {
+  try {
+    response.clearCookie(COOKIE_TOKEN_NAME).status(204).end();
   } catch (error) {
     response.status(500).json({ message: error.message || "Server error" });
   }

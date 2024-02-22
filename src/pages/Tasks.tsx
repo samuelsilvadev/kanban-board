@@ -7,6 +7,7 @@ import { TasksGroups } from "../components/TasksGroups";
 import { useProjects } from "../state/hooks/useProjects";
 import { ChangeProjectSelector } from "../components/ChangeProjectSelector";
 import { useTasks } from "../state/hooks/useTasks";
+import { LogoutButton } from "../components/LogoutButton";
 
 export function Tasks() {
   const { isLoading: isTasksLoading, error: tasksError } = useTasks();
@@ -40,8 +41,12 @@ export function Tasks() {
         <ChangeProjectSelector />
         <Search />
         <CreateTask />
+        <LogoutButton />
       </header>
-      <main className="m-5 p-5 border border-slate-700">
+      <main
+        className="m-5 p-5 border border-slate-700"
+        data-testid="tasks-groups-wrapper"
+      >
         <TasksGroups />
       </main>
     </>

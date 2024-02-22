@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AnyAction } from "redux-saga";
 import { AuthUrlModel, AuthUserModel, UserModel } from "../../types/auth";
 import { ENDPOINTS } from "../../utils/api";
@@ -43,11 +43,18 @@ const authSlice = createSlice({
         state.user = payload.user;
       }
     );
+    builder.addCase(logoutApiActions.success, (state) => {
+      state.loading = false;
+      state.error = undefined;
+      state.user = null;
+    });
     builder.addMatcher(
       (action: AnyAction) =>
-        [getAuthUrlApiActions.start, getAuthTokenApiActions.start].includes(
-          action.type
-        ),
+        [
+          getAuthUrlApiActions.start,
+          getAuthTokenApiActions.start,
+          logoutApiActions.start,
+        ].includes(action.type),
       (state) => {
         state.loading = true;
         state.error = undefined;
@@ -55,9 +62,11 @@ const authSlice = createSlice({
     );
     builder.addMatcher(
       (action: AnyAction) =>
-        [getAuthUrlApiActions.failure, getAuthTokenApiActions.failure].includes(
-          action.type
-        ),
+        [
+          getAuthUrlApiActions.failure,
+          getAuthTokenApiActions.failure,
+          logoutApiActions.failure,
+        ].includes(action.type),
       (state, { payload }: PayloadAction<EndpointError>) => {
         state.loading = false;
         state.error = payload;
@@ -69,10 +78,16 @@ const authSlice = createSlice({
 enum Entities {
   GET_AUTH_URL = "GET_AUTH_URL",
   GET_AUTH_TOKEN = "GET_AUTH_TOKEN",
+  LOGOUT = "LOGOUT",
 }
 
 export const getAuthUrlApiActions = getApiActions(Entities.GET_AUTH_URL);
 export const getAuthTokenApiActions = getApiActions(Entities.GET_AUTH_TOKEN);
+export const logoutApiActions = getApiActions(Entities.LOGOUT);
+
+export const logout = createAction<void, typeof logoutApiActions.start>(
+  logoutApiActions.start
+);
 
 export const getAuthUrl = (): ApiCallAction => {
   return {

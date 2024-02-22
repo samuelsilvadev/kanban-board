@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react";
-import { getAuthToken, getAuthUrl } from "../auth/authSlice";
+import { getAuthToken, getAuthUrl, logout } from "../auth/authSlice";
 import {
   selectAuthUrl,
   selectIsAuthLoading,
@@ -29,6 +29,7 @@ export function useAuth() {
     },
     [dispatch]
   );
+  const _logout = useCallback(() => dispatch(logout()), [dispatch]);
 
   return useMemo(
     () => ({
@@ -39,6 +40,7 @@ export function useAuth() {
       isAuthUserLoaded,
       getAuthUrl: _getAuthUrl,
       getAuthToken: _getAuthToken,
+      logout: _logout,
     }),
     [
       authUrl,
@@ -48,6 +50,7 @@ export function useAuth() {
       isAuthUserLoaded,
       _getAuthToken,
       _getAuthUrl,
+      _logout,
     ]
   );
 }
