@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: "*"
+    branches: ["*"]
     types: [opened, reopened, synchronize, edited, ready_for_review]
 
 jobs:
@@ -21,6 +21,10 @@ jobs:
         with:
           node-version: 18
 
+      - name: Prepare .env
+        run: cp .env.example .env
+        shell: bash
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
@@ -33,10 +37,17 @@ jobs:
       - name: Test
         run: yarn test:coverage
 
+      - name: e2e
+        run: yarn cypress:ci
+
+      - name: Combine coverage reports
+        run: yarn report:combined
+
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          directory: combined-coverage
 
       - name: Build
         run: yarn build

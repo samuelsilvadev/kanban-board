@@ -26,6 +26,9 @@
     "@babel/plugin-proposal-optional-catch-binding": "^7.18.6",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/plugin-proposal-unicode-property-regex": "^7.18.6",
+    "@cypress/code-coverage": "^3.12.24",
+    "@cypress/instrument-cra": "^1.4.0",
+    "@testing-library/cypress": "^10.0.1",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -36,7 +39,9 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "autoprefixer": "^10.4.16",
+    "babel-plugin-istanbul": "^6.1.1",
     "commitizen": "^4.2.4",
+    "cypress": "^13.6.5",
     "cz-conventional-changelog": "^3.3.0",
     "esbuild": "^0.20.0",
     "eslint-plugin-unused-imports": "^3.0.0",
@@ -44,27 +49,39 @@
     "json-server": "^0.17.4",
     "lint-staged": "^11.2.3",
     "msw": "^2.1.5",
+    "nyc": "^15.1.0",
     "postcss": "^8.4.30",
     "prettier": "^2.4.1",
     "react-scripts": "5.0.0",
     "standard-version": "^9.3.2",
+    "start-server-and-test": "^2.0.3",
     "tailwindcss": "^3.3.3",
     "typescript": "^4.1.2",
     "undici": "^5.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts -r @cypress/instrument-cra start",
     "build": "react-scripts build",
     "test": "NODE_ENV=test react-scripts test",
     "test:coverage": "yarn test --coverage --ci --reporters=default --watchAll=false",
+    "cypress:run": "cypress run --browser chrome",
+    "cypress:open": "cypress open",
+    "cypress:ci": "start-server-and-test 'yarn start' 3000 'yarn cypress:run'",
     "eject": "react-scripts eject",
     "format": "prettier --write . --loglevel=error",
     "lint": "eslint . --ext .tsx,.ts,.js --max-warnings=0",
     "release": "DISABLE_CZ=true standard-version",
-    "check-types": "tsc",
+    "check-types": "tsc && tsc --project cypress/tsconfig.json",
     "server": "json-server --watch database/db.json --port 3001",
     "preserver:dev": "touch server-dist/public/error.html && touch server-dist/public/style.css",
-    "server:dev": "esbuild server/index.ts --bundle --outdir=server-dist --platform=node && node server-dist/index.js"
+    "server:dev": "esbuild server/index.ts --bundle --outdir=server-dist --platform=node && node server-dist/index.js",
+    "precopy:reports": "rm -rf reports .nyc_output && mkdir reports && mkdir .nyc_output",
+    "copy:reports": "cp cypress-coverage/coverage-final.json reports/from-cypress.json && cp coverage/coverage-final.json reports/from-jest.json",
+    "precombine:reports": "yarn copy:reports",
+    "combine:reports": "yarn nyc merge reports && mv coverage.json .nyc_output/out.json",
+    "prereport:combined": "yarn combine:reports",
+    "report:combined": "yarn nyc report --reporter lcov --reporter text --reporter cobertura --report-dir combined-coverage",
+    "report:reset": "rm -rf coverage cypress-coverage .nyc_output reports combined-coverage"
   },
   "eslintConfig": {
     "plugins": [
@@ -92,7 +109,15 @@
           "argsIgnorePattern": "^_"
         }
       ]
-    }
+    },
+    "overrides": [
+      {
+        "files": "cypress/**/*.ts",
+        "rules": {
+          "jest/expect-expect": "off"
+        }
+      }
+    ]
   },
   "browserslist": {
     "production": [
@@ -129,11 +154,16 @@
   },
   "jest": {
     "coverageReporters": [
+      "json",
       "text",
-      "cobertura"
+      "cobertura",
+      "lcov"
     ],
     "transformIgnorePatterns": [
       "/node_modules/(?!(@bundled-es-modules)/).*/"
     ]
+  },
+  "nyc": {
+    "report-dir": "cypress-coverage"
   }
 }
