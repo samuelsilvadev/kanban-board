@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.8.0](https://github.com/samuelsilvadev/kanban-board/compare/v1.7.1...v1.8.0) (2024-02-22)
+
+
+### Features
+
+* implement logout ([#26](https://github.com/samuelsilvadev/kanban-board/issues/26)) ([dbefd1e](https://github.com/samuelsilvadev/kanban-board/commit/dbefd1ef603513644a14142dd90b7a686811f564))
+
 ## [1.7.1](https://github.com/samuelsilvadev/kanban-board/compare/v1.7.0...v1.7.1) (2024-02-21)
 
 
