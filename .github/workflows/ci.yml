@@ -37,9 +37,6 @@ jobs:
       - name: Test
         run: yarn test:coverage
 
-      - name: Build
-        run: yarn build
-
       - name: e2e
         run: yarn cypress:ci
 
