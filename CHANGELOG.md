@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.9.0](https://github.com/samuelsilvadev/kanban-board/compare/v1.8.0...v1.9.0) (2024-02-27)
+
+
+### Features
+
+* add csrf protection ([#29](https://github.com/samuelsilvadev/kanban-board/issues/29)) ([e69ad9f](https://github.com/samuelsilvadev/kanban-board/commit/e69ad9f1cf49df9c4e2f61353be3edb40ab1e84d))
+
 ## [1.8.0](https://github.com/samuelsilvadev/kanban-board/compare/v1.7.1...v1.8.0) (2024-02-22)
 
 

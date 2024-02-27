@@ -151,9 +151,7 @@ export const createTask = (
       options: {
         method: "POST",
         body: JSON.stringify({ ...body, status: "OPEN" }),
-        headers: {
-          "Content-Type": "application/json",
-        },
+        credentials: "include",
       },
     },
   };
