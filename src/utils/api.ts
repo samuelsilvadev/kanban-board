@@ -1,3 +1,4 @@
+import { csrf } from "./csrfSingleton";
 import { EndpointError } from "./EndpointError";
 
 const BASE_URL = process.env.REACT_APP_SERVER_BASE_URL;
@@ -23,6 +24,8 @@ export function fetchFacade<Response>(
   url: string,
   requestOptions?: RequestInit
 ): Promise<Response> {
+  const csrfToken = csrf.get();
+
   return fetch(
     url,
     requestOptions
@@ -30,6 +33,7 @@ export function fetchFacade<Response>(
           ...requestOptions,
           headers: {
             "Content-Type": "application/json",
+            ...(csrfToken && { "x-csrf-token": csrfToken }),
             ...requestOptions.headers,
           },
         }
@@ -43,6 +47,10 @@ export function fetchFacade<Response>(
       return response;
     })
     .then((response) => {
+      const csrfToken = response.headers.get("x-csrf-token");
+
+      csrf.set(csrfToken);
+
       if (response.status === 204) {
         return response;
       }
