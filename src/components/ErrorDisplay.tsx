@@ -6,6 +6,12 @@ type ErrorDisplayProps = {
   errorStatus?: number;
 };
 
+function shouldDisplayLoginButton(
+  errorStatus: ErrorDisplayProps["errorStatus"]
+) {
+  return errorStatus && [401, 403].includes(errorStatus);
+}
+
 export function ErrorDisplay({
   message,
   errorStatus,
@@ -25,7 +31,7 @@ export function ErrorDisplay({
             Try to reload
           </button>
         )}
-        {errorStatus === 401 && (
+        {shouldDisplayLoginButton(errorStatus) && (
           <Link className="mt-5 border-red-500 border-2 px-5" to="/">
             Login again?
           </Link>
