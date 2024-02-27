@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.10.0](https://github.com/samuelsilvadev/kanban-board/compare/v1.9.0...v1.10.0) (2024-02-27)
+
+
+### Features
+
+* display login button on 401 and 403 ([#30](https://github.com/samuelsilvadev/kanban-board/issues/30)) ([a2fce45](https://github.com/samuelsilvadev/kanban-board/commit/a2fce45d20465163b5d24eaa3570f0855b3ae98b))
+
+
+### Bug Fixes
+
+* reset error after successful API result ([#32](https://github.com/samuelsilvadev/kanban-board/issues/32)) ([7a60064](https://github.com/samuelsilvadev/kanban-board/commit/7a60064405c3d3c4ad0ad0a83f83cedcd7e2a3ec))
+
 ## [1.9.0](https://github.com/samuelsilvadev/kanban-board/compare/v1.8.0...v1.9.0) (2024-02-27)
 
 
