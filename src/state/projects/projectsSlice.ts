@@ -64,6 +64,9 @@ const projectsSlice = createSlice({
     builder.addCase(
       createTaskApiActions.success,
       (state, { payload }: PayloadAction<TaskModel>) => {
+        state.loading = false;
+        state.error = undefined;
+
         if (!state.data) {
           return;
         }

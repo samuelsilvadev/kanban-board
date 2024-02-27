@@ -60,6 +60,7 @@ const tasksSlice = createSlice({
       editTasksApiActions.success,
       (state, { payload }: PayloadAction<TaskModel>) => {
         state.loading = false;
+        state.error = undefined;
 
         if (!state.data) {
           state.data = {};
@@ -75,6 +76,7 @@ const tasksSlice = createSlice({
       getProjectsApiActions.success,
       (state, { payload }: GetProjectsSuccessAction) => {
         state.loading = false;
+        state.error = undefined;
 
         if (!payload.entities.tasks) {
           return;
