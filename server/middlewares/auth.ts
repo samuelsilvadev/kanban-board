@@ -7,6 +7,12 @@ export function authMiddleware(
   response: Response,
   next: NextFunction
 ) {
+  if (!config.tokenSecret) {
+    throw new Error(
+      "Missing required config values to run the authentication middleware"
+    );
+  }
+
   try {
     const token = request.cookies.token;
 

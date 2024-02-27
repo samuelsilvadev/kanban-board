@@ -18,6 +18,7 @@ function _editTaskClient(body: TaskModel): Promise<TaskModel> {
   return fetchFacade(`${ENDPOINTS.EDIT_TASK}/${body.id}`, {
     method: "PUT",
     body: JSON.stringify(body),
+    credentials: "include",
   });
 }
 

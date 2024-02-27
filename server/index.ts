@@ -8,6 +8,16 @@ import jwt from "jsonwebtoken";
 import { getAuthParams, getTokenParams } from "./authUtils";
 import { authMiddleware } from "./middlewares/auth";
 import { NextFunction, Request, Response } from "express";
+import csrf from "csurf";
+
+type AuthTokenResponse = {
+  access_token: string;
+  expires_in: number;
+  refresh_token: string;
+  scope: string;
+  token_type: "Bearer";
+  id_token: string;
+};
 
 const server = jsonServer.create();
 const router = jsonServer.router(
@@ -16,11 +26,18 @@ const router = jsonServer.router(
 const middlewares = jsonServer.defaults();
 const NON_AUTHENTICATED_PATHS = ["/auth/url", "/auth/token", "/auth/logout"];
 const COOKIE_TOKEN_NAME = "token";
+const CSRF_TOKEN_NAME = "x-csrf-token";
+
+const csrfProtectionMiddleware = csrf({
+  cookie: { httpOnly: true },
+  ignoreMethods: [],
+});
 
 server.use(
   cors({
-    origin: [config.clientUrl],
+    origin: [config.clientUrl || ""],
     credentials: true,
+    exposedHeaders: [CSRF_TOKEN_NAME],
   })
 );
 server.use(cookieParser());
@@ -33,6 +50,28 @@ server.use((request: Request, response: Response, next: NextFunction) => {
     authMiddleware(request, response, next);
   }
 });
+server.use(csrfProtectionMiddleware);
+server.use(
+  (error, request: Request, response: Response, next: NextFunction) => {
+    if (
+      error.code !== "EBADCSRFTOKEN" ||
+      NON_AUTHENTICATED_PATHS.slice(0, 2).includes(request.path)
+    ) {
+      return next();
+    }
+
+    response.status(403).json({ message: "Unauthorized" });
+  }
+);
+server.use((request: Request, response: Response, next: NextFunction) => {
+  const csrfToken = request.csrfToken?.();
+
+  if (csrfToken) {
+    response.setHeader(CSRF_TOKEN_NAME, csrfToken);
+  }
+
+  next();
+});
 
 server.get("/auth/url", (_request: Request, response: Response) => {
   try {
@@ -43,15 +82,6 @@ server.get("/auth/url", (_request: Request, response: Response) => {
     response.status(500).json({ message: error.message });
   }
 });
-
-type AuthTokenResponse = {
-  access_token: string;
-  expires_in: number;
-  refresh_token: string;
-  scope: string;
-  token_type: "Bearer";
-  id_token: string;
-};
 
 server.get("/auth/token", async (request: Request, response: Response) => {
   const { code } = request.query;

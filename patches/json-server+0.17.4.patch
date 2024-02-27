@@ -1,0 +1,41 @@
+diff --git a/node_modules/json-server/lib/server/router/plural.js b/node_modules/json-server/lib/server/router/plural.js
+index 6b18226..ef776a9 100644
+--- a/node_modules/json-server/lib/server/router/plural.js
++++ b/node_modules/json-server/lib/server/router/plural.js
+@@ -215,7 +215,15 @@ module.exports = (db, name, opts) => {
+     } else {
+       resource = db.get(name).insert(req.body).value();
+     }
+-    res.setHeader('Access-Control-Expose-Headers', 'Location');
++    
++    const previousExposedHeaders = res.getHeader('access-control-expose-headers');
++    let exposedHeaders = 'Location'
++
++    if (previousExposedHeaders) {
++      exposedHeaders += `,${previousExposedHeaders}`;
++    }
++
++    res.setHeader('Access-Control-Expose-Headers', exposedHeaders);
+     res.location(`${getFullURL(req)}/${resource.id}`);
+     res.status(201);
+     res.locals.data = resource;
+diff --git a/node_modules/json-server/lib/server/router/singular.js b/node_modules/json-server/lib/server/router/singular.js
+index e7c2830..ebb2bc7 100644
+--- a/node_modules/json-server/lib/server/router/singular.js
++++ b/node_modules/json-server/lib/server/router/singular.js
+@@ -23,7 +23,14 @@ module.exports = (db, name, opts) => {
+       db.set(name, req.body).value();
+       res.locals.data = db.get(name).value();
+     }
+-    res.setHeader('Access-Control-Expose-Headers', 'Location');
++    const previousExposedHeaders = res.getHeader('access-control-expose-headers');
++    let exposedHeaders = 'Location'
++
++    if (previousExposedHeaders) {
++      exposedHeaders += `,${previousExposedHeaders}`;
++    }
++
++    res.setHeader('Access-Control-Expose-Headers', exposedHeaders);
+     res.location(`${getFullURL(req)}`);
+     res.status(201);
+     next();
